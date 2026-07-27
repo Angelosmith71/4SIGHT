@@ -1,0 +1,11 @@
+import type { Variants } from 'framer-motion';
+export const cardVariant: Variants = { hidden:{ opacity:0, y:10 }, visible:{ opacity:1, y:0, transition:{ duration:0.3 } } };
+export const listVariant: Variants = { hidden:{}, visible:{ transition:{ staggerChildren:0.07, delayChildren:0.1 } } };
+export const pulseGlow = { animate:{ boxShadow:['0 0 0px rgba(0,230,255,0.0)','0 0 16px rgba(0,230,255,0.7)','0 0 0px rgba(0,230,255,0.0)'] }, transition:{ duration:1.2, repeat:Infinity, repeatType:'loop' as const } };
+export const rotatingRing = { animate:{ rotate:360 }, transition:{ duration:20, repeat:Infinity, ease:'linear' as const } };
+export const rotatingRingFast = { animate:{ rotate:360 }, transition:{ duration:4, repeat:Infinity, ease:'linear' as const } };
+export const fadeUp: Variants = { hidden:{ opacity:0, y:16 }, visible:{ opacity:1, y:0, transition:{ duration:0.45, ease:'easeOut' } } };
+export const scanLine = { animate:{ y:['0%','100%'] }, transition:{ duration:2.5, repeat:Infinity, ease:'linear' as const, repeatType:'loop' as const } };
+export const flicker: Variants = { idle:{ opacity:1 }, alert:{ opacity:[1,0.4,1,0.6,1], transition:{ duration:0.6, repeat:Infinity, repeatDelay:2 } } };
+export const slideInRight: Variants = { hidden:{ opacity:0, x:40 }, visible:{ opacity:1, x:0, transition:{ duration:0.3, ease:'easeOut' } }, exit:{ opacity:0, x:40, transition:{ duration:0.2 } } };
+export const pageVariants: Variants = { hidden:{ opacity:0, y:6 }, visible:{ opacity:1, y:0, transition:{ duration:0.25, ease:'easeOut' } }, exit:{ opacity:0, y:-6, transition:{ duration:0.15 } } };
