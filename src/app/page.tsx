@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
+import { ContactModal } from '@/components/ui/ContactModal';
 
 function Counter({ end, decimals=0, suffix='+', color }: { end:number; decimals?:number; suffix?:string; color:string }) {
   const [val,setVal]=useState(0); const ref=useRef<HTMLSpanElement>(null); const inView=useInView(ref,{once:true});
@@ -9,7 +10,7 @@ function Counter({ end, decimals=0, suffix='+', color }: { end:number; decimals?
   return <span ref={ref} style={{color}}>{decimals>0?val.toFixed(decimals):Math.floor(val).toLocaleString()}{suffix}</span>;
 }
 
-function Navbar() {
+function Navbar({ onContactClick }: { onContactClick: () => void }) {
   const [scrolled,setScrolled]=useState(false);
   useEffect(()=>{ const fn=()=>setScrolled(window.scrollY>20); window.addEventListener('scroll',fn); return()=>window.removeEventListener('scroll',fn); },[]);
   return (
@@ -22,6 +23,7 @@ function Navbar() {
         <a href="#features" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
         <a href="#pricing" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
         <Link href="/about" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
+        <button onClick={onContactClick} className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px] focus:outline-none">Contact</button>
       </div>
       <div className="flex items-center gap-3">
         <Link href="/login"><motion.button whileHover={{scale:1.04}} whileTap={{scale:0.96}} className="font-mono text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-sm border border-white/15 text-white/50 hover:border-electricCyan/40 hover:text-electricCyan transition-all">Log In</motion.button></Link>
@@ -35,9 +37,10 @@ const FEATURES=[{icon:'ti-shield-bolt',color:'#FF2E4C',title:'Cookie Shield',des
 const PLANS=[{name:'Free',price:'$0',period:'forever',color:'#00E6FF',popular:false,features:['10 threat detections','1 neural agent','7-day log retention','Cookie Shield'],locked:['Bot Monitor','Analytics'],cta:'Get Started Free',href:'/signup'},{name:'Pro',price:'$49',period:'/mo · $449/yr saves 10%',color:'#A45CFF',popular:true,features:['Unlimited threats','All 6 neural agents','90-day log retention','Bot Monitor','Analytics & Reports','5 team members'],locked:[],cta:'Start Pro Trial',href:'/signup'},{name:'Enterprise',price:'$99',period:'/mo · $899/yr saves 10%',color:'#FF2E4C',popular:false,features:['Unlimited everything','Unlimited agents','365-day logs','Priority support + SLA','Unlimited team members','Custom agents'],locked:[],cta:'Start Enterprise Trial',href:'/signup'}];
 
 export default function LandingPage() {
+  const [isContactOpen, setIsContactOpen] = useState(false);
   return (
     <div className="min-h-screen bg-deepVoid" style={{backgroundImage:'linear-gradient(rgba(0,230,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,0.018) 1px,transparent 1px)',backgroundSize:'32px 32px'}}>
-      <Navbar/>
+      <Navbar onContactClick={() => setIsContactOpen(true)}/>
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{background:'radial-gradient(ellipse 80% 70% at 50% -10%,rgba(164,92,255,0.14) 0%,transparent 65%)'}}/>
@@ -117,9 +120,18 @@ export default function LandingPage() {
           <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" />
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
-        <div className="flex gap-5 font-mono text-[9px]">{[['About','/about'],['Pricing','/pricing'],['Login','/login'],['Sign Up','/signup']].map(([l,h])=><Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>)}</div>
+        <div className="flex gap-5 font-mono text-[9px]">
+          {[['About','/about'],['Pricing','/pricing'],['Contact','contact'],['Login','/login'],['Sign Up','/signup']].map(([l,h])=>
+            h === 'contact' ? (
+              <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
+            ) : (
+              <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
+            )
+          )}
+        </div>
         <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/18 italic">Analyzing AI threats in real time...</span></div>
       </footer>
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
   );
 }

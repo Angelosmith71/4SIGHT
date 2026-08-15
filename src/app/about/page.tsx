@@ -1,12 +1,15 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useState } from 'react';
+import { ContactModal } from '@/components/ui/ContactModal';
 const PROTECTIONS=[{label:'Hidden Trackers',icon:'ti-radar',color:'#FF2E4C'},{label:'Rogue AI Bots',icon:'ti-robot',color:'#A45CFF'},{label:'Cookie Profiling',icon:'ti-cookie',color:'#FFB648'},{label:'Behavioral Fingerprinting',icon:'ti-fingerprint',color:'#00E6FF'},{label:'Suspicious Browser Activity',icon:'ti-browser',color:'#FF2E4C'},{label:'Unauthorized Data Access',icon:'ti-database-lock',color:'#00FF9C'},{label:'AI‑Driven Scraping Attempts',icon:'ti-spy',color:'#A45CFF'},{label:'Real-time threat detection',icon:'ti-shield-check',color:'#00E6FF'}];
 const WHY=[{icon:'👁',title:'Clarity',color:'#00E6FF',desc:"See what's happening behind the screen — in real time, visually, without jargon."},{icon:'🧠',title:'Context',color:'#A45CFF',desc:'Understand what each threat means and why it matters to your digital life.'},{icon:'⚡',title:'Control',color:'#FF2E4C',desc:'Block, quarantine, or neutralize any threat instantly — with one click.'}];
 const WHO=[{icon:'🎨',label:'Creators'},{icon:'💼',label:'Professionals'},{icon:'🎓',label:'Students'},{icon:'👨‍👩‍👧',label:'Families'},{icon:'🌐',label:'Everyday Users Who Deserve Transparency'},{icon:'🛡',label:'Anyone Who Refuses to Be Tracked Without Consent'}];
 const FUTURE=['Privacy is visual','Security is intelligent','AI works for you, not against you','People understand their digital environment','Control belongs to the user, not the system'];
 function SH({label}:{label:string}){return(<div className="flex items-center gap-3 mb-8"><span className="font-mono text-[10px] text-electricCyan/40">«</span><h2 className="font-rajdhani font-bold text-xl text-white tracking-[2px]">{label}</h2><div className="flex-1 h-px bg-white/5"/></div>);}
 export default function AboutPage(){
+  const [isContactOpen, setIsContactOpen] = useState(false);
   return(
     <div className="min-h-screen bg-deepVoid" style={{backgroundImage:'linear-gradient(rgba(0,230,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,0.018) 1px,transparent 1px)',backgroundSize:'32px 32px'}}>
       <nav className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-8 h-[56px] bg-deepVoid/90 backdrop-blur-md border-b border-electricCyan/10">
@@ -14,8 +17,13 @@ export default function AboutPage(){
           <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-10 h-10 rounded-md object-cover border border-electricCyan/50 shadow-[0_0_15px_rgba(0,230,255,0.35)] flex-shrink-0" />
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </Link>
-        <div className="hidden md:flex gap-6 font-mono text-[10px]"><Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link><span className="text-electricCyan uppercase">About</span><Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link></div>
-        <Link href="/signup"><motion.button whileHover={{scale:1.03,boxShadow:'0 0 16px rgba(0,230,255,0.3)'}} whileTap={{scale:0.97}} className="relative font-mono text-[9px] tracking-[1.5px] uppercase px-4 py-2 rounded-sm border border-electricCyan/40 text-electricCyan bg-electricCyan/8 overflow-hidden"><span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-electricCyan/60"/><span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-electricCyan/60"/>» Start Free</motion.button></Link>
+        <div className="hidden md:flex gap-6 font-mono text-[10px]">
+          <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
+          <span className="text-electricCyan uppercase">About</span>
+          <Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link>
+          <button onClick={() => setIsContactOpen(true)} className="text-white/35 hover:text-electricCyan uppercase focus:outline-none">Contact</button>
+        </div>
+        <Link href="/signup"><motion.button whileHover={{scale:1.03,boxShadow:'0 0 16px rgba(0,230,255,0.3)'}} whileTap={{scale:0.97}} className="relative font-mono text-[9px] tracking-[1.5px] uppercase px-4 py-2 rounded-sm border border-electricCyan/40 text-electricCyan bg-electricCyan/8 overflow-hidden"><span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-electricCyan/60"/><span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-electricCyan/60"/>» Start Free</motion.button></Link>
       </nav>
       {/* HERO */}
       <section className="relative flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
@@ -44,7 +52,23 @@ export default function AboutPage(){
       <section className="max-w-4xl mx-auto px-6 py-14"><SH label="🌐 The Future We're Building"/><p className="font-mono text-[11px] text-white/30 mb-5">A world where:</p><div className="flex flex-col gap-2">{FUTURE.map(f=><motion.div key={f} initial={{opacity:0,x:-10}} whileInView={{opacity:1,x:0}} viewport={{once:true}} className="flex items-center gap-4 px-5 py-3.5 rounded-sm border border-emeraldPulse/12 bg-emeraldPulse/3 hover:border-emeraldPulse/30 hover:bg-emeraldPulse/7 hover:translate-x-1 transition-all"><div className="w-2 h-2 rounded-full bg-emeraldPulse flex-shrink-0" style={{boxShadow:'0 0 8px #00FF9C'}}/><span className="font-mono text-[11px] text-white/65">{f}</span></motion.div>)}</div><p className="text-center font-mono text-[12px] text-white/45 mt-6">4Sight Guardian Shield is the <span className="text-emeraldPulse">first step</span> toward that future.</p></section>
       {/* CTA */}
       <section className="relative text-center px-6 py-20 border-t border-white/5 overflow-hidden"><div className="absolute inset-0 pointer-events-none" style={{background:'radial-gradient(ellipse 60% 80% at 50% 50%,rgba(164,92,255,0.07) 0%,transparent 65%)'}}/><h2 className="font-rajdhani font-bold text-3xl md:text-4xl text-white mb-3 relative z-10">Ready to Own Your<br/><span className="text-plasmaViolet">Digital Life?</span></h2><p className="font-mono text-[11px] text-white/30 mb-8 relative z-10">Join thousands of users who chose to see the invisible — and stop it.</p><div className="flex items-center justify-center gap-3 relative z-10 flex-wrap"><Link href="/signup"><motion.button whileHover={{scale:1.03,boxShadow:'0 0 24px rgba(164,92,255,0.4)'}} whileTap={{scale:0.97}} className="relative px-8 py-3.5 rounded-sm border border-plasmaViolet/50 text-plasmaViolet bg-plasmaViolet/12 font-mono text-[11px] tracking-[1.5px] uppercase overflow-hidden"><span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-plasmaViolet/60"/><span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-plasmaViolet/60"/>» Start Free Trial</motion.button></Link><Link href="/login"><motion.button whileHover={{scale:1.03}} whileTap={{scale:0.97}} className="relative px-8 py-3.5 rounded-sm border border-electricCyan/30 text-electricCyan bg-electricCyan/6 font-mono text-[11px] tracking-[1.5px] uppercase overflow-hidden"><span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-electricCyan/50"/><span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-electricCyan/50"/>Log In</motion.button></Link></div></section>
-      <footer className="flex items-center justify-between px-6 md:px-8 py-6 border-t border-white/5 flex-wrap gap-4"><div className="flex items-center gap-3 font-rajdhani font-bold text-sm tracking-[2px]"><img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" /><span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span></div><div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/20 italic">Analyzing AI threats in real time...</span></div><span className="font-mono text-[9px] text-white/20">© 2025 4Sight Guardian Shield</span></footer>
+      <footer className="flex items-center justify-between px-6 md:px-8 py-6 border-t border-white/5 flex-wrap gap-4">
+        <div className="flex items-center gap-3 font-rajdhani font-bold text-sm tracking-[2px]">
+          <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" />
+          <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
+        </div>
+        <div className="flex gap-5 font-mono text-[9px]">
+          {[['Home','/'],['About','/about'],['Pricing','/pricing'],['Contact','contact']].map(([l,h])=>
+            h === 'contact' ? (
+              <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
+            ) : (
+              <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
+            )
+          )}
+        </div>
+        <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/20 italic">Analyzing AI threats in real time...</span></div>
+      </footer>
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
   );
 }
