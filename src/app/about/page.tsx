@@ -20,6 +20,7 @@ export default function AboutPage(){
         <div className="hidden md:flex gap-6 font-mono text-[10px]">
           <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
           <span className="text-electricCyan uppercase">About</span>
+          <a href="mailto:info@4sightgurdianai.com" className="text-white/35 hover:text-electricCyan uppercase">info@4sightgurdianai.com</a>
           <Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link>
           <button onClick={() => setIsContactOpen(true)} className="text-white/35 hover:text-electricCyan uppercase focus:outline-none">Contact</button>
         </div>
@@ -57,7 +58,7 @@ export default function AboutPage(){
           <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" />
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
-        <div className="flex gap-5 font-mono text-[9px]">
+        <div className="flex gap-5 font-mono text-[9px] items-center">
           {[['Home','/'],['About','/about'],['Pricing','/pricing'],['Contact','contact']].map(([l,h])=>
             h === 'contact' ? (
               <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
@@ -65,6 +66,7 @@ export default function AboutPage(){
               <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
             )
           )}
+          <a href="mailto:info@4sightgurdianai.com" className="text-white/25 hover:text-electricCyan transition-colors uppercase ml-2 border-l border-white/10 pl-4">info@4sightgurdianai.com</a>
         </div>
         <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/20 italic">Analyzing AI threats in real time...</span></div>
       </footer>

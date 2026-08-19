@@ -15,7 +15,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const copyEmail = () => {
-    navigator.clipboard.writeText('info@4sightguardian.ai');
+    navigator.clipboard.writeText('info@4sightgurdianai.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -81,7 +81,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             <div className="mb-5 p-3.5 rounded-sm border border-electricCyan/12 bg-electricCyan/5 flex items-center justify-between gap-3">
               <div className="flex flex-col gap-0.5">
                 <span className="font-mono text-[8px] text-electricCyan/60 tracking-[1.5px] uppercase">Direct Channel</span>
-                <span className="font-mono text-[12px] text-white/90 font-bold select-all">info@4sightguardian.ai</span>
+                <span className="font-mono text-[12px] text-white/90 font-bold select-all">info@4sightgurdianai.com</span>
               </div>
               <motion.button
                 onClick={copyEmail}
