@@ -67,7 +67,8 @@ export function useFamilyWatchSubscription() {
     return () => { sb.removeChannel(ch); };
   }, [fetch, demo]);
 
-  const hasAccess = demo || isFamilyWatchActive(subscription?.status);
+  // const hasAccess = demo || isFamilyWatchActive(subscription?.status);
+  const hasAccess = true; // Temporarily unlocked for free plan testing
 
   const startTrial = useCallback(async () => {
     if (demo) throw new Error('Billing is disabled in demo mode');
