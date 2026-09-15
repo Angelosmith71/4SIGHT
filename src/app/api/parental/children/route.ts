@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
   if (isDemoMode()) {
     const child: DbChildProfile = {
       id: newDemoChildId(),
+      user_id: 'demo-user',
       name: validated.name,
       age: validated.age,
       device: validated.device,

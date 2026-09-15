@@ -1,4 +1,4 @@
-import type { DbAgent, DbBotEvent, DbLogEntry, DbMetrics, DbThreat } from '@/lib/supabase/types';
+import type { DbAgent, DbBotEvent, DbLogEntry, DbMetrics, DbThreat, DbChildProfile, DbViewingActivity, DbParentalAlert } from '@/lib/supabase/types';
 
 const now = new Date().toISOString();
 
@@ -41,4 +41,18 @@ export const demoBotEvents: DbBotEvent[] = [
   { id: 'b2', actor: 'ScrapeBot X', action_bold: 'Cookie Scan', action_light: 'detected & quarantined', status: 'Quarantined', severity: 'high', origin: 'third-party script', behavior: 'Enumerate document.cookie', permissions: 'storage', risk_pct: 78, icon: 'ti-spy', created_at: now },
   { id: 'b3', actor: 'TrackBot 7', action_bold: 'History Harvest', action_light: 'monitoring', status: 'Monitoring', severity: 'medium', origin: 'analytics SDK', behavior: 'Fingerprint browser', permissions: 'navigation', risk_pct: 55, icon: 'ti-eye', created_at: now },
   { id: 'b4', actor: 'AdBot Delta', action_bold: 'Cross-Site Track', action_light: 'alert raised', status: 'Alert', severity: 'high', origin: 'ad network', behavior: 'Third-party tracker injection', permissions: 'network', risk_pct: 71, icon: 'ti-radar', created_at: now },
+];
+
+export const demoChildren: DbChildProfile[] = [
+  { id: 'c1', user_id: 'u1', name: 'Alex', age: 12, device: 'Alex Chromebook', status: 'online', avatar_icon: 'ti-mood-kid', screen_time_mins: 85, screen_time_limit_mins: 120, content_filter: 'PG-13', alerts_today: 1, created_at: now },
+  { id: 'c2', user_id: 'u1', name: 'Sam', age: 8, device: 'Sam iPad', status: 'offline', avatar_icon: 'ti-mood-smile', screen_time_mins: 110, screen_time_limit_mins: 120, content_filter: 'G', alerts_today: 0, created_at: now },
+];
+
+export const demoViewingActivity: DbViewingActivity[] = [
+  { id: 'v1', child_id: 'c1', child_name: 'Alex', platform: 'YouTube', title: 'Minecraft Let\'s Play', category: 'video', rating: 'safe', duration_mins: 45, url: 'https://youtube.com', icon: 'ti-brand-youtube', created_at: now },
+  { id: 'v2', child_id: 'c2', child_name: 'Sam', platform: 'Netflix', title: 'Cartoons', category: 'streaming', rating: 'safe', duration_mins: 30, url: null, icon: 'ti-brand-netflix', created_at: now },
+];
+
+export const demoParentalAlerts: DbParentalAlert[] = [
+  { id: 'p1', child_id: 'c1', child_name: 'Alex', title: 'Restricted Content Blocked', message: 'Attempted to access R-rated movie site', severity: 'high', read: false, action_taken: 'blocked', icon: 'ti-shield', created_at: now },
 ];
