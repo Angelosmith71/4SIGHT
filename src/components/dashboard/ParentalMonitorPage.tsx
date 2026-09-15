@@ -99,7 +99,7 @@ function ChildCard({ child, selected, onClick, onEdit, onDelete }: {
 }
 
 function ActivityRow({ item, contentFilter }: { item: DbViewingActivity; contentFilter?: DbChildProfile['content_filter'] }) {
-  const r = RATING[item.rating as Rating];
+  const r = RATING[item.rating as Rating] || RATING.safe;
   const blocked = contentFilter ? contentExceedsFilter(contentFilter, item.rating) : false;
   return (
     <motion.div variants={cardVariant}
@@ -126,7 +126,7 @@ function ActivityRow({ item, contentFilter }: { item: DbViewingActivity; content
 }
 
 function AlertRow({ alert, onRead, onNotify }: { alert: DbParentalAlert; onRead: () => void; onNotify: () => void }) {
-  const s = SEV[alert.severity as Severity];
+  const s = SEV[alert.severity as Severity] || SEV.medium;
   return (
     <motion.div layout initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
       className={`relative p-3 rounded-sm border overflow-hidden transition-all
