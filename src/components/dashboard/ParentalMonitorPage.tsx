@@ -301,7 +301,8 @@ export function ParentalMonitorPage() {
             </summary>
             <div className="px-4 pb-4 pt-1 border-t border-electricCyan/10">
               <ol className="font-mono text-[10px] text-white/45 space-y-2 list-decimal list-inside">
-                <li>In Chrome on the child device, open <span className="text-electricCyan">chrome://extensions</span> → enable Developer mode → Load unpacked → select the <span className="text-white/60">extension/</span> folder in this project.</li>
+                <li><a href="/guardian-extension.zip" download className="text-emeraldPulse hover:underline font-bold">Download the Extension ZIP here</a> and extract it on the child's device.</li>
+                <li>In Chrome on the child device, open <span className="text-electricCyan">chrome://extensions</span> → enable Developer mode → Load unpacked → select the extracted <span className="text-white/60">guardian-extension/</span> folder.</li>
                 <li>On this dashboard, select a child → <span className="text-electricCyan">Link device</span> → copy the 6-character code.</li>
                 <li>Click the Guardian extension icon → enter server URL (<span className="text-white/60">http://localhost:3000</span> for local dev) and the pairing code.</li>
                 <li>Set content filters (G, PG, PG-13) and screen-time limits per child — the extension enforces them automatically.</li>
