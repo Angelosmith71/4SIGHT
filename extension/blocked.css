@@ -1,0 +1,17 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,46,76,0.12), transparent 70%), #0d1117;
+  color: #e6edf3;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 24px;
+}
+main { max-width: 480px; text-align: center; }
+.shield { font-size: 56px; margin-bottom: 16px; }
+.eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #ff2e4c; margin-bottom: 8px; }
+h1 { font-size: 28px; margin-bottom: 12px; }
+.reason { font-size: 15px; color: #c9d1d9; line-height: 1.6; margin-bottom: 8px; }
+.child { font-size: 13px; color: #8b949e; margin-bottom: 20px; }
+.note { font-size: 12px; color: #6e7681; line-height: 1.6; border-top: 1px solid #21262d; padding-top: 20px; }

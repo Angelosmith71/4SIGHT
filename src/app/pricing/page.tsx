@@ -12,7 +12,7 @@ export default function PricingPage() {
   return(
     <div className="min-h-screen bg-deepVoid px-4 py-12" style={{backgroundImage:'radial-gradient(ellipse 70% 45% at 50% 0%,rgba(164,92,255,0.08) 0%,transparent 60%),linear-gradient(rgba(0,230,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,0.018) 1px,transparent 1px)',backgroundSize:'100% 100%,32px 32px,32px 32px'}}>
       <div className="text-center mb-10 max-w-2xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-3 mb-6"><img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-10 h-10 rounded-md object-cover border border-electricCyan/50 shadow-[0_0_15px_rgba(0,230,255,0.35)] flex-shrink-0" /><span className="font-rajdhani font-bold text-lg tracking-[3px]">4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span></Link>
+        <Link href="/" className="inline-flex items-center gap-2 mb-6"><span className="text-neoCrimson font-bold text-xl">«</span><span className="font-rajdhani font-bold text-lg tracking-[3px]">4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span></Link>
         <p className="font-mono text-[10px] tracking-[3px] text-electricCyan/30 uppercase mb-3">// subscription plans</p>
         <h1 className="font-rajdhani font-bold text-4xl text-white tracking-wide mb-3">Choose Your <span className="text-plasmaViolet">Shield</span></h1>
         <p className="font-mono text-[11px] text-white/35">All plans include a 14-day free trial. No credit card required to start.</p>

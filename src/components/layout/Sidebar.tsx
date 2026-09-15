@@ -3,18 +3,25 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NAV_ROUTES } from '@/utils/navRoutes';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useFamilyWatchSubscription } from '@/hooks/useFamilyWatchSubscription';
 import { isDemoMode } from '@/lib/demo';
 import type { NavRoute } from '@/types';
 const GATED: Record<string,'botMonitor'|'analytics'|'reports'|'realtime'> = { '/dashboard/bot-monitor':'botMonitor', '/dashboard/analytics':'analytics', '/dashboard/reports':'reports', '/dashboard/live-feed':'realtime' };
 export function Sidebar() {
   const pathname=usePathname(); const{subscription,can}=useSubscription();
+  const { hasAccess: hasFamilyWatch } = useFamilyWatchSubscription();
   const demo=isDemoMode();
   return (
     <nav className="flex flex-col bg-graphite/60 border-r border-electricCyan/10 py-4 gap-0.5">
       {(['monitor','analyze','system'] as const).map(sec=>(
         <div key={sec}>
           <p className="font-mono text-[9px] tracking-[2px] text-white/20 px-4 pt-3 pb-1.5 uppercase">{sec}</p>
-          {NAV_ROUTES.filter(r=>r.section===sec).map(route=>{ const gf=GATED[route.href]; const locked=!demo&&gf?!can(gf):false; return <NavItem key={route.href} route={route} active={pathname===route.href} locked={locked}/>; })}
+          {NAV_ROUTES.filter(r=>r.section===sec).map(route=>{
+            const gf=GATED[route.href];
+            const isFamily=route.href==='/dashboard/parental-monitor';
+            const locked=!demo?(isFamily?!hasFamilyWatch:(gf?!can(gf):false)):false;
+            return <NavItem key={route.href} route={route} active={pathname===route.href} locked={locked}/>;
+          })}
         </div>
       ))}
       <div className="flex-1"/>

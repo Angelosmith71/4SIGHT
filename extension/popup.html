@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guardian Family Watch</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">🛡️</div>
+      <div>
+        <h1>Guardian Family Watch</h1>
+        <p class="sub">4Sight Guardian AI · Child device agent</p>
+      </div>
+    </header>
+
+    <section id="paired-view" class="hidden">
+      <div class="status ok">
+        <span class="dot"></span>
+        <span>Monitoring <strong id="child-name">—</strong></span>
+      </div>
+      <dl class="meta">
+        <div><dt>Filter</dt><dd id="filter-label">—</dd></div>
+        <div><dt>Screen time</dt><dd id="screen-time">—</dd></div>
+        <div><dt>Server</dt><dd id="server-url">—</dd></div>
+      </dl>
+      <button id="refresh-btn" class="btn secondary">Refresh config</button>
+      <button id="unpair-btn" class="btn danger">Unpair device</button>
+    </section>
+
+    <section id="pair-view">
+      <p class="hint">Enter the pairing code from the parent dashboard (Family Watch → Link device).</p>
+      <label>Guardian server URL</label>
+      <input id="api-url" type="url" placeholder="http://localhost:3000" value="http://localhost:3000" />
+      <label>Pairing code</label>
+      <input id="pair-code" type="text" placeholder="ABC123" maxlength="8" autocapitalize="characters" />
+      <label>Device name</label>
+      <input id="device-name" type="text" placeholder="Emma's Chromebook" />
+      <button id="pair-btn" class="btn primary">Pair device</button>
+      <p id="error" class="error hidden"></p>
+    </section>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

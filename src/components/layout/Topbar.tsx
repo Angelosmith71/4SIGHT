@@ -2,7 +2,8 @@
 import { useClock } from '@/hooks/useClock';
 import { useAuth } from '@/hooks/useData';
 import { motion } from 'framer-motion';
-export function Topbar({ activeThreats }: { activeThreats: number }) {
+import Link from 'next/link';
+export function Topbar({ activeThreats, parentalAlerts = 0 }: { activeThreats: number; parentalAlerts?: number }) {
   const time=useClock(); const{signOut}=useAuth();
   return (
     <header className="col-span-2 flex items-center justify-between px-5 h-[52px] bg-graphite border-b border-electricCyan/10">
@@ -13,6 +14,12 @@ export function Topbar({ activeThreats }: { activeThreats: number }) {
       <div className="flex items-center gap-5 font-mono text-[11px]">
         <div className="flex items-center gap-1.5 text-white/40"><span className="w-1.5 h-1.5 rounded-full bg-emeraldPulse shadow-[0_0_6px_#00FF9C]"/>Neural core online</div>
         <div className="flex items-center gap-1.5 text-white/40"><span className="w-1.5 h-1.5 rounded-full bg-neoCrimson shadow-[0_0_6px_#FF2E4C] animate-pulse"/>{activeThreats} active threats</div>
+        {parentalAlerts > 0 && (
+          <Link href="/dashboard/parental-monitor" className="flex items-center gap-1.5 text-neoCrimson hover:text-neoCrimson/80 transition-colors">
+            <span className="w-1.5 h-1.5 rounded-full bg-neoCrimson animate-pulse"/>
+            {parentalAlerts} family alert{parentalAlerts !== 1 ? 's' : ''}
+          </Link>
+        )}
         <div className="flex items-center gap-1.5 text-white/40"><span className="w-1.5 h-1.5 rounded-full bg-solarAmber"/>Firewall 97%</div>
       </div>
       <div className="flex items-center gap-3">

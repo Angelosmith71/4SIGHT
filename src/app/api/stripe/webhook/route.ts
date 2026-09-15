@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe/client';
 import { createServiceClient } from '@/lib/supabase/server';
+import { cancelFamilyWatchSubscription, isFamilyWatchPrice, upsertFamilyWatchSubscription } from '@/app/api/stripe/family-webhook-helpers';
 import type Stripe from 'stripe';
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -19,7 +20,7 @@ function toIsoDate(timestamp?: number | null): string | null {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
-async function upsert(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Subscription) {
+async function upsertMainSubscription(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Subscription) {
   const userId = sub.metadata?.supabase_user_id;
   let resolvedId = userId;
   if (!userId) {
@@ -31,6 +32,7 @@ async function upsert(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Su
     return;
   }
   const priceId = sub.items.data[0]?.price?.id ?? '';
+  if (isFamilyWatchPrice(priceId, sub.metadata)) return;
   const planId = getPlan(priceId);
   await sb.from('subscriptions').upsert(
     {
@@ -48,6 +50,16 @@ async function upsert(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Su
     },
     { onConflict: 'user_id' }
   );
+  );
+}
+
+async function handleSubscription(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Subscription) {
+  const priceId = sub.items.data[0]?.price?.id ?? '';
+  if (isFamilyWatchPrice(priceId, sub.metadata)) {
+    await upsertFamilyWatchSubscription(sb, sub);
+  } else {
+    await upsertMainSubscription(sb, sub);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -67,19 +79,32 @@ export async function POST(request: NextRequest) {
       if (s.mode === 'subscription' && s.subscription) {
         const sub = await stripe.subscriptions.retrieve(s.subscription as string);
         if (!sub.metadata?.supabase_user_id && s.metadata?.supabase_user_id) {
-          await stripe.subscriptions.update(sub.id, { metadata: { supabase_user_id: s.metadata.supabase_user_id } });
+          await stripe.subscriptions.update(sub.id, { metadata: { ...sub.metadata, supabase_user_id: s.metadata.supabase_user_id } });
           sub.metadata.supabase_user_id = s.metadata.supabase_user_id;
         }
-        await upsert(sb, sub);
+        await handleSubscription(sb, sub);
       }
     } else if (['customer.subscription.created', 'customer.subscription.updated'].includes(event.type)) {
-      await upsert(sb, event.data.object as Stripe.Subscription);
+      await handleSubscription(sb, event.data.object as Stripe.Subscription);
     } else if (event.type === 'customer.subscription.deleted') {
       const sub = event.data.object as Stripe.Subscription;
-      await sb.from('subscriptions').update({ plan_id: 'free', status: 'canceled', stripe_subscription_id: null, stripe_price_id: null, billing_interval: null }).eq('stripe_subscription_id', sub.id);
+      const priceId = sub.items.data[0]?.price?.id ?? '';
+      if (isFamilyWatchPrice(priceId, sub.metadata)) {
+        await cancelFamilyWatchSubscription(sb, sub.id);
+      } else {
+        await sb.from('subscriptions').update({ plan_id: 'free', status: 'canceled', stripe_subscription_id: null, stripe_price_id: null, billing_interval: null }).eq('stripe_subscription_id', sub.id);
+      }
     } else if (event.type === 'invoice.payment_failed') {
       const inv = event.data.object as Stripe.Invoice;
-      if (inv.subscription) await sb.from('subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', inv.subscription as string);
+      if (inv.subscription) {
+        const sub = await stripe.subscriptions.retrieve(inv.subscription as string);
+        const priceId = sub.items.data[0]?.price?.id ?? '';
+        if (isFamilyWatchPrice(priceId, sub.metadata)) {
+          await sb.from('family_watch_subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
+        } else {
+          await sb.from('subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
+        }
+      }
     }
     return NextResponse.json({ received: true });
   } catch (e) {

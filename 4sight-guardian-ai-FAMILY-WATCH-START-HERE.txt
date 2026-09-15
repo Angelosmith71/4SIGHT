@@ -1,0 +1,48 @@
+4Sight Guardian AI — Family Watch Update
+========================================
+
+This package includes the full Guardian AI dashboard PLUS:
+
+  • Family Watch (parental monitoring dashboard)
+  • Per-child profiles (add/edit/remove)
+  • Daily screen time limits
+  • Content filters per child (G, PG, PG-13, R)
+  • Parent email/SMS alert settings
+  • Guardian Chrome extension (extension/ folder)
+  • Family Watch subscription ($20/mo, 7-day free trial, cancel anytime)
+
+QUICK START (local demo)
+------------------------
+1. Install Node.js 22+ (or use portable node in ../.tools/node-v22)
+2. Open terminal in this folder:
+     npm install
+     npm run dev
+3. Open http://localhost:3000 — log in with any email/password (demo mode)
+4. Go to Dashboard → Family Watch
+
+CHROME EXTENSION (child device)
+-------------------------------
+1. Chrome → chrome://extensions → Developer mode → Load unpacked
+2. Select the "extension" folder in this project
+3. In Family Watch → select a child → Link device → copy pairing code
+4. Extension popup → http://localhost:3000 + pairing code
+
+STRIPE (Family Watch billing — production)
+------------------------------------------
+1. Set STRIPE_SECRET_KEY in .env.local
+2. Run: npm run stripe:setup
+3. Add NEXT_PUBLIC_STRIPE_FAMILY_WATCH_MONTHLY=price_... to .env.local
+4. Pricing page: /pricing/family-watch
+
+SUPABASE (production database)
+------------------------------
+Run supabase/setup-all.sql in Supabase SQL Editor (includes Part 3 parental + Part 4 Family Watch subscription tables).
+
+KEY FILES
+---------
+  extension/                          Chrome extension
+  src/components/dashboard/           Family Watch UI
+  src/app/api/parental/               Parental + agent APIs
+  src/app/api/stripe/create-family-checkout/  Family Watch checkout
+  src/lib/stripe/family-plan.ts       $20/mo, 7-day trial config
+  supabase/setup-all.sql              Full database setup

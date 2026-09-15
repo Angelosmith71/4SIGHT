@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import type { DbThreat, DbLogEntry, DbAgent, DbMetrics, DbBotEvent } from '@/lib/supabase/types';
+import type { DbThreat, DbLogEntry, DbAgent, DbMetrics, DbBotEvent, DbChildProfile, DbViewingActivity, DbParentalAlert } from '@/lib/supabase/types';
 import { DEMO_COOKIE, isDemoMode } from '@/lib/demo';
 import { demoBotEvents } from '@/lib/demo/data';
 
@@ -138,6 +138,63 @@ export function useBotEvents() {
     });
   }, [fetch]);
   return { events, loading, refetch: fetch };
+}
+
+export function useParentalMonitoring(childId?: string | null) {
+  const [children, setChildren] = useState<DbChildProfile[]>([]);
+  const [activity, setActivity] = useState<DbViewingActivity[]>([]);
+  const [alerts, setAlerts] = useState<DbParentalAlert[]>([]);
+  const [unreadAlerts, setUnreadAlerts] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const fetch = useCallback(async () => {
+    try {
+      const p = new URLSearchParams();
+      if (childId) p.set('child_id', childId);
+      const res = await window.fetch(`/api/parental?${p}`);
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
+      setChildren(json.children ?? []);
+      setActivity(json.activity ?? []);
+      setAlerts(json.alerts ?? []);
+      setUnreadAlerts(json.unread_alerts ?? 0);
+    } finally {
+      setLoading(false);
+    }
+  }, [childId]);
+
+  useEffect(() => {
+    fetch();
+    const iv = setInterval(fetch, 20000);
+    return () => clearInterval(iv);
+  }, [fetch]);
+
+  const markAlertRead = useCallback((id: string) => {
+    setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
+    setUnreadAlerts(prev => Math.max(0, prev - 1));
+  }, []);
+
+  const saveChild = useCallback(async (data: { name: string; age: number; device: string; status: DbChildProfile['status']; avatar_icon: string; screen_time_limit_mins: number; content_filter: DbChildProfile['content_filter'] }, id?: string) => {
+    const url = id ? `/api/parental/children/${id}` : '/api/parental/children';
+    const res = await window.fetch(url, {
+      method: id ? 'PATCH' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    await fetch();
+    return json.data as DbChildProfile;
+  }, [fetch]);
+
+  const deleteChild = useCallback(async (id: string) => {
+    const res = await window.fetch(`/api/parental/children/${id}`, { method: 'DELETE' });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    await fetch();
+  }, [fetch]);
+
+  return { children, activity, alerts, unreadAlerts, loading, refetch: fetch, markAlertRead, saveChild, deleteChild };
 }
 
 export function useAuth() {
