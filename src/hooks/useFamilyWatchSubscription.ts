@@ -41,7 +41,7 @@ export function useFamilyWatchSubscription() {
       setLoading(false);
       return;
     }
-    const { data } = await sb.from('family_watch_subscriptions').select('*').eq('user_id', user.id).single();
+    const { data } = await sb.from('family_watch_subscriptions').select('*').eq('user_id', user.id).maybeSingle();
     if (data) {
       setSubscription({
         status: data.status,
