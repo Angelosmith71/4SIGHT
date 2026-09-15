@@ -50,7 +50,6 @@ async function upsertMainSubscription(sb: ReturnType<typeof createServiceClient>
     },
     { onConflict: 'user_id' }
   );
-  );
 }
 
 async function handleSubscription(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Subscription) {
