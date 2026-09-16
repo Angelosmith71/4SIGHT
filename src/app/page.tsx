@@ -35,7 +35,12 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
 }
 
 const FEATURES=[{icon:'ti-shield-bolt',color:'#FF2E4C',title:'Cookie Shield',desc:'Blocks third-party tracking cookies before they profile your behaviour across the web.'},{icon:'ti-robot',color:'#A45CFF',title:'AI Bot Monitor',desc:'Detects rogue AI bots attempting clipboard access, cookie scanning, or history harvesting.'},{icon:'ti-radar',color:'#00E6FF',title:'Tracker Defense',desc:'Neutralizes cross-site trackers and behavioral fingerprinting scripts in real time.'},{icon:'ti-database-lock',color:'#00FF9C',title:'Data Watch',desc:'Monitors for unusual outbound data transfers and unauthorized access attempts.'},{icon:'ti-activity',color:'#FFB648',title:'Live Feed',desc:'Real-time event stream showing every threat detected, blocked, and neutralized.'},{icon:'ti-chart-dots',color:'#A45CFF',title:'Analytics',desc:'Deep threat analytics, attack breakdowns, and exportable compliance reports.'}];
-const PLANS=[{name:'Free',price:'$0',period:'forever',color:'#00E6FF',popular:false,features:['10 threat detections','1 neural agent','7-day log retention','Cookie Shield'],locked:['Bot Monitor','Analytics'],cta:'Get Started Free',href:'/signup'},{name:'Pro',price:'$49',period:'/mo · $449/yr saves 10%',color:'#A45CFF',popular:true,features:['Unlimited threats','All 6 neural agents','90-day log retention','Bot Monitor','Analytics & Reports','5 team members'],locked:[],cta:'Start Pro Trial',href:'/signup'},{name:'Enterprise',price:'$99',period:'/mo · $899/yr saves 10%',color:'#FF2E4C',popular:false,features:['Unlimited everything','Unlimited agents','365-day logs','Priority support + SLA','Unlimited team members','Custom agents'],locked:[],cta:'Start Enterprise Trial',href:'/signup'}];
+const PLANS=[
+  {name:'Free',price:'$0',period:'forever',color:'#00E6FF',popular:false,features:['10 threat detections','1 neural agent','7-day log retention','Cookie Shield'],locked:['Bot Monitor','Analytics'],cta:'Get Started Free',href:'/signup'},
+  {name:'Family Watch',price:'$20',period:'/mo · 7-day free trial',color:'#00FF9C',popular:false,features:['Monitor viewing activity','Per-child content filters','Daily screen time limits','Instant parent alerts','Cancel anytime'],locked:['Main AI features'],cta:'Start Family Trial',href:'/pricing/family-watch'},
+  {name:'Pro',price:'$49',period:'/mo · $449/yr saves 10%',color:'#A45CFF',popular:true,features:['Unlimited threats','All 6 neural agents','90-day log retention','Bot Monitor','Analytics & Reports','5 team members'],locked:[],cta:'Start Pro Trial',href:'/signup'},
+  {name:'Enterprise',price:'$99',period:'/mo · $899/yr saves 10%',color:'#FF2E4C',popular:false,features:['Unlimited everything','Unlimited agents','365-day logs','Priority support + SLA','Unlimited team members','Custom agents'],locked:[],cta:'Start Enterprise Trial',href:'/signup'}
+];
 
 export default function LandingPage() {
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -84,9 +89,9 @@ export default function LandingPage() {
         </div>
       </section>
       {/* PRICING */}
-      <section id="pricing" className="max-w-4xl mx-auto px-6 py-20 border-t border-white/5">
+      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 border-t border-white/5">
         <div className="text-center mb-12"><p className="font-mono text-[9px] tracking-[3px] text-electricCyan/40 uppercase mb-3">// subscription plans</p><h2 className="font-rajdhani font-bold text-3xl md:text-4xl text-white">Choose Your <span className="text-electricCyan">Shield</span></h2></div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {PLANS.map(p=>(
             <motion.div key={p.name} initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className={`relative flex flex-col rounded-sm border bg-[rgba(10,8,14,0.9)] overflow-hidden hover:-translate-y-1 transition-all ${p.popular?'scale-[1.03]':''}`} style={{borderColor:`${p.color}35`}}>
               <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2" style={{borderColor:p.color}}/><span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2" style={{borderColor:p.color}}/>

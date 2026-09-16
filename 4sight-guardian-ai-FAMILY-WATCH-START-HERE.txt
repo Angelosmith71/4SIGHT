@@ -28,7 +28,7 @@ CHROME EXTENSION (child device)
 4. Extension popup → http://localhost:3000 + pairing code
 
 STRIPE (Family Watch billing — production)
-------------------------------------------
+------------------------------------------  
 1. Set STRIPE_SECRET_KEY in .env.local
 2. Run: npm run stripe:setup
 3. Add NEXT_PUBLIC_STRIPE_FAMILY_WATCH_MONTHLY=price_... to .env.local
