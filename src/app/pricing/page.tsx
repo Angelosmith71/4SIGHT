@@ -8,7 +8,7 @@ import Link from 'next/link';
 export default function PricingPage() {
   const [interval,setInterval]=useState<BillingInterval>('month');const [loading,setLoading]=useState<string|null>(null);
   const{subscription,checkout}=useSubscription();const router=useRouter();
-  async function handleSelect(planId:string){if(planId==='free'){router.push('/dashboard');return;}setLoading(planId);try{await checkout(planId as 'pro'|'enterprise',interval);}catch(e){console.error(e);}finally{setLoading(null);}}
+  async function handleSelect(planId:string){if(planId==='free'){router.push('/dashboard');return;}if(planId==='family'){router.push('/pricing/family-watch');return;}setLoading(planId);try{await checkout(planId as 'pro'|'enterprise',interval);}catch(e){console.error(e);}finally{setLoading(null);}}
   return(
     <div className="min-h-screen bg-deepVoid px-4 py-12" style={{backgroundImage:'radial-gradient(ellipse 70% 45% at 50% 0%,rgba(164,92,255,0.08) 0%,transparent 60%),linear-gradient(rgba(0,230,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,0.018) 1px,transparent 1px)',backgroundSize:'100% 100%,32px 32px,32px 32px'}}>
       <div className="text-center mb-10 max-w-2xl mx-auto">
@@ -23,7 +23,7 @@ export default function PricingPage() {
           {interval==='year'&&<motion.span initial={{opacity:0,x:-8}} animate={{opacity:1,x:0}} className="font-mono text-[9px] px-2 py-0.5 rounded-sm bg-emeraldPulse/15 border border-emeraldPulse/30 text-emeraldPulse">SAVE 10%</motion.span>}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-[1200px] mx-auto">
         {PLANS.map(plan=>{
           const price=interval==='month'?plan.monthlyPrice:plan.yearlyPrice;const isCurrent=subscription?.planId===plan.id;const isLoading=loading===plan.id;const saving=yearlySaving(plan);
           return(
