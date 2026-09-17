@@ -26,12 +26,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const sb = createClient();
-    sb.from('threats').select('*', { count: 'exact', head: true }).eq('status', 'active').then(({ count }) => setActiveThreats(count ?? 0));
-    const ch = sb.channel(`shell-${Math.random().toString(36).slice(2)}`).on('postgres_changes', { event: '*', schema: 'public', table: 'threats' }, () =>
-      sb.from('threats').select('*', { count: 'exact', head: true }).eq('status', 'active').then(({ count }) => setActiveThreats(count ?? 0))
-    ).subscribe();
-    return () => { sb.removeChannel(ch); };
+    try {
+      const sb = createClient();
+      const updateCount = async () => {
+        try {
+          const { count } = await sb.from('threats').select('*', { count: 'exact', head: true }).eq('status', 'active');
+          setActiveThreats(count ?? 0);
+        } catch { /* ignore */ }
+      };
+      void updateCount();
+      const ch = sb.channel(`shell-${Math.random().toString(36).slice(2)}`).on('postgres_changes', { event: '*', schema: 'public', table: 'threats' }, () => {
+        void updateCount();
+      }).subscribe();
+      return () => { try { sb.removeChannel(ch); } catch { /* ignore */ } };
+    } catch {
+      loadCount();
+    }
   }, []);
 
   useEffect(() => {

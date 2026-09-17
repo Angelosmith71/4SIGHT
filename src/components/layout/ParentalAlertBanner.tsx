@@ -22,9 +22,11 @@ export function ParentalAlertBanner() {
         const latest = (json.alerts ?? []).find((a: { read: boolean; id: string; title: string; child_name: string }) => !a.read);
         if (unread > 0 && latest) {
           setAlert({ title: latest.title, child_name: latest.child_name, unread });
-          if (notifiedRef.current !== latest.id && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+          if (notifiedRef.current !== latest.id && typeof window !== 'undefined' && 'Notification' in window && typeof Notification === 'function' && Notification.permission === 'granted') {
             notifiedRef.current = latest.id;
-            new Notification('Guardian Family Watch', { body: `${latest.child_name}: ${latest.title}` });
+            try {
+              new Notification('Guardian Family Watch', { body: `${latest.child_name}: ${latest.title}` });
+            } catch { /* ignore mobile Notification constructor restriction */ }
           }
         } else {
           setAlert(null);

@@ -60,11 +60,13 @@ export function useFamilyWatchSubscription() {
   useEffect(() => {
     fetch();
     if (demo) return;
-    const sb = createClient();
-    const ch = sb.channel('family-watch-sub')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'family_watch_subscriptions' }, fetch)
-      .subscribe();
-    return () => { sb.removeChannel(ch); };
+    try {
+      const sb = createClient();
+      const ch = sb.channel(`family-watch-sub-${Math.random().toString(36).slice(2)}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'family_watch_subscriptions' }, fetch)
+        .subscribe();
+      return () => { sb.removeChannel(ch); };
+    } catch { /* ignore */ }
   }, [fetch, demo]);
 
   const hasAccess = demo || isFamilyWatchActive(subscription?.status);

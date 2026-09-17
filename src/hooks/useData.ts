@@ -153,11 +153,22 @@ export function useParentalMonitoring(childId?: string | null) {
       if (childId) p.set('child_id', childId);
       const res = await window.fetch(`/api/parental?${p}`);
       const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      if (json.error) {
+        setChildren([]);
+        setActivity([]);
+        setAlerts([]);
+        setUnreadAlerts(0);
+        return;
+      }
       setChildren(json.children ?? []);
       setActivity(json.activity ?? []);
       setAlerts(json.alerts ?? []);
       setUnreadAlerts(json.unread_alerts ?? 0);
+    } catch {
+      setChildren([]);
+      setActivity([]);
+      setAlerts([]);
+      setUnreadAlerts(0);
     } finally {
       setLoading(false);
     }
@@ -207,15 +218,19 @@ export function useAuth() {
       setLoading(false);
       return;
     }
-    const sb = createClient();
-    sb.auth.getUser().then(({ data }) => {
-      setUser(data.user ? { id: data.user.id, email: data.user.email } : null);
+    try {
+      const sb = createClient();
+      sb.auth.getUser().then(({ data }) => {
+        setUser(data.user ? { id: data.user.id, email: data.user.email } : null);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+      const { data } = sb.auth.onAuthStateChange((_, session) => {
+        setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
+      });
+      return () => { data?.subscription?.unsubscribe?.(); };
+    } catch {
       setLoading(false);
-    });
-    const { data: { subscription } } = sb.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
-    });
-    return () => subscription.unsubscribe();
+    }
   }, []);
   const signOut = useCallback(async () => {
     if (isDemoMode()) {
@@ -223,8 +238,10 @@ export function useAuth() {
       window.location.href = '/login';
       return;
     }
-    const sb = createClient();
-    await sb.auth.signOut();
+    try {
+      const sb = createClient();
+      await sb.auth.signOut();
+    } catch { /* ignore */ }
     window.location.href = '/login';
   }, []);
   return { user, loading, signOut };

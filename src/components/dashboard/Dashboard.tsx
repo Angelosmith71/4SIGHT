@@ -8,7 +8,12 @@ export function Dashboard() {
   const { metrics, loading } = useMetrics();
   const { children, unreadAlerts, alerts, loading: parentalLoading } = useParentalMonitoring();
 
-  const latestAlert = alerts.find(a => !a.read);
+  const latestAlert = (alerts ?? []).find(a => a && !a.read);
+
+  const privacyScore = Number(metrics?.privacy_score ?? 86);
+  const threatsBlocked = Number(metrics?.threats_blocked ?? 1247);
+  const cookiesBlocked = Number(metrics?.cookies_blocked ?? 23);
+  const threatScore = Number(metrics?.threat_score ?? 6.4);
 
   return (
     <PageShell>
@@ -25,10 +30,10 @@ export function Dashboard() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { label: 'Privacy Score', value: metrics?.privacy_score ?? 86, color: '#00E6FF' },
-              { label: 'Threats Blocked', value: (metrics?.threats_blocked ?? 1247).toLocaleString(), color: '#FF2E4C' },
-              { label: 'Cookies Blocked', value: metrics?.cookies_blocked ?? 23, color: '#A45CFF' },
-              { label: 'Threat Score', value: (metrics?.threat_score ?? 6.4).toFixed(1), color: '#FFB648' },
+              { label: 'Privacy Score', value: Number.isNaN(privacyScore) ? 86 : privacyScore, color: '#00E6FF' },
+              { label: 'Threats Blocked', value: (Number.isNaN(threatsBlocked) ? 1247 : threatsBlocked).toLocaleString(), color: '#FF2E4C' },
+              { label: 'Cookies Blocked', value: Number.isNaN(cookiesBlocked) ? 23 : cookiesBlocked, color: '#A45CFF' },
+              { label: 'Threat Score', value: (Number.isNaN(threatScore) ? 6.4 : threatScore).toFixed(1), color: '#FFB648' },
             ].map(m => (
               <div key={m.label} className="relative p-4 rounded-sm border border-white/8 bg-white/[0.02] overflow-hidden">
                 <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2" style={{ borderColor: m.color }} />
@@ -56,11 +61,11 @@ export function Dashboard() {
             {!parentalLoading && (
               <div className="flex gap-4">
                 <div className="text-center">
-                  <p className="font-rajdhani font-bold text-2xl text-plasmaViolet">{children.length}</p>
+                  <p className="font-rajdhani font-bold text-2xl text-plasmaViolet">{(children ?? []).length}</p>
                   <p className="font-mono text-[9px] text-white/30 uppercase">Children</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-rajdhani font-bold text-2xl text-neoCrimson">{unreadAlerts}</p>
+                  <p className="font-rajdhani font-bold text-2xl text-neoCrimson">{unreadAlerts ?? 0}</p>
                   <p className="font-mono text-[9px] text-white/30 uppercase">Unread alerts</p>
                 </div>
               </div>
