@@ -44,6 +44,32 @@ export function Dashboard() {
           </div>
         )}
 
+        <Link href="/dashboard/grok"
+          className="relative block p-5 rounded-sm border border-plasmaViolet/25 bg-plasmaViolet/5 hover:bg-plasmaViolet/10 transition-colors overflow-hidden group">
+          <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-plasmaViolet/50" />
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="font-mono text-[9px] tracking-[2px] text-plasmaViolet/60 uppercase">Grok · xAI</p>
+              <h2 className="font-rajdhani font-bold text-lg text-white group-hover:text-plasmaViolet transition-colors">Guardian Advisor</h2>
+              <p className="font-mono text-[10px] text-white/35 mt-1 max-w-md">Ask Grok to explain threats, Family Watch alerts, and what to do next — with live dashboard context.</p>
+            </div>
+            <span className="font-mono text-[9px] tracking-[1px] uppercase px-3 py-1.5 rounded-sm border border-plasmaViolet/40 text-plasmaViolet">Open chat →</span>
+          </div>
+        </Link>
+
+        <Link href="/dashboard/groq-agent"
+          className="relative block p-5 rounded-sm border border-solarAmber/25 bg-solarAmber/5 hover:bg-solarAmber/10 transition-colors overflow-hidden group">
+          <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-solarAmber/50" />
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="font-mono text-[9px] tracking-[2px] text-solarAmber/60 uppercase">Grok · xAI · paid add-on</p>
+              <h2 className="font-rajdhani font-bold text-lg text-white group-hover:text-solarAmber transition-colors">Grok xAI Agent</h2>
+              <p className="font-mono text-[10px] text-white/35 mt-1 max-w-md">Activate Grok for answers on threats, privacy, and Family Watch. $15/mo after a 7-day trial.</p>
+            </div>
+            <span className="font-mono text-[9px] tracking-[1px] uppercase px-3 py-1.5 rounded-sm border border-solarAmber/40 text-solarAmber">Open agent →</span>
+          </div>
+        </Link>
+
         {/* Family Watch summary */}
         <Link href="/dashboard/parental-monitor"
           className="relative block p-5 rounded-sm border border-plasmaViolet/25 bg-plasmaViolet/5 hover:bg-plasmaViolet/10 transition-colors overflow-hidden group">

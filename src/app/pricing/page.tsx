@@ -5,10 +5,15 @@ import { useRouter } from 'next/navigation';
 import { PLANS, yearlySaving, type BillingInterval } from '@/lib/stripe/plans';
 import { useSubscription } from '@/hooks/useSubscription';
 import Link from 'next/link';
+import { isFamilyWatchActive } from '@/lib/stripe/family-plan';
+import { isGroqAgentActive } from '@/lib/stripe/groq-plan';
+import { FAMILY_WATCH_PLAN } from '@/lib/stripe/family-plan';
+import { GROQ_AGENT_PLAN } from '@/lib/stripe/groq-plan';
+
 export default function PricingPage() {
   const [interval,setInterval]=useState<BillingInterval>('month');const [loading,setLoading]=useState<string|null>(null);
   const{subscription,checkout}=useSubscription();const router=useRouter();
-  async function handleSelect(planId:string){if(planId==='free'){router.push('/dashboard');return;}if(planId==='family'){router.push('/pricing/family-watch');return;}setLoading(planId);try{await checkout(planId as 'pro'|'enterprise',interval);}catch(e){console.error(e);}finally{setLoading(null);}}
+  async function handleSelect(planId:string){if(planId==='free'){router.push('/dashboard');return;}if(planId==='family'){router.push('/pricing/family-watch');return;}setLoading(planId);try{await checkout(planId as 'pro'|'enterprise',interval);}catch(e:any){if(e.message==='Unauthorized'){router.push('/login');}else{console.error(e);}}finally{setLoading(null);}}
   return(
     <div className="min-h-screen bg-deepVoid px-4 py-12" style={{backgroundImage:'radial-gradient(ellipse 70% 45% at 50% 0%,rgba(164,92,255,0.08) 0%,transparent 60%),linear-gradient(rgba(0,230,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,0.018) 1px,transparent 1px)',backgroundSize:'100% 100%,32px 32px,32px 32px'}}>
       <div className="text-center mb-10 max-w-2xl mx-auto">
@@ -23,7 +28,7 @@ export default function PricingPage() {
           {interval==='year'&&<motion.span initial={{opacity:0,x:-8}} animate={{opacity:1,x:0}} className="font-mono text-[9px] px-2 py-0.5 rounded-sm bg-emeraldPulse/15 border border-emeraldPulse/30 text-emeraldPulse">SAVE 10%</motion.span>}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-[1200px] mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 max-w-[1400px] mx-auto">
         {PLANS.map(plan=>{
           const price=interval==='month'?plan.monthlyPrice:plan.yearlyPrice;const isCurrent=subscription?.planId===plan.id;const isLoading=loading===plan.id;const saving=yearlySaving(plan);
           return(
@@ -54,6 +59,23 @@ export default function PricingPage() {
             </div>
           );
         })}
+        <div className={`relative flex flex-col rounded-sm border overflow-hidden hover:scale-[1.02] transition-transform`} style={{borderColor:`${GROQ_AGENT_PLAN.color}35`,background:'rgba(10,8,14,0.95)'}}>
+          <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{borderColor:GROQ_AGENT_PLAN.color}}/><span className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2" style={{borderColor:GROQ_AGENT_PLAN.color}}/>
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{backgroundImage:'linear-gradient(rgba(0,230,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,1) 1px,transparent 1px)',backgroundSize:'24px 24px'}}/>
+          <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none" style={{background:`radial-gradient(ellipse 80% 100% at 50% 0%,${GROQ_AGENT_PLAN.color}12,transparent 70%)`}}/>
+          <div className="relative z-10 px-5 pt-4 pb-4 border-b" style={{borderColor:`${GROQ_AGENT_PLAN.color}20`}}>
+            <h2 className="font-rajdhani font-bold text-xl text-white">{GROQ_AGENT_PLAN.name}</h2>
+            <div className="font-rajdhani font-bold text-4xl mt-1" style={{color:GROQ_AGENT_PLAN.color}}>${(GROQ_AGENT_PLAN.monthlyPrice/100).toFixed(0)}<span className="text-base">/mo</span></div>
+          </div>
+          <div className="relative z-10 px-5 py-4 flex flex-col gap-2.5 flex-1">
+            {GROQ_AGENT_PLAN.features.map(f=><div key={f} className="flex items-center gap-2.5"><span className="font-mono text-[10px] flex-shrink-0" style={{color:GROQ_AGENT_PLAN.color}}>✓</span><span className={`font-mono text-[10px] text-white/70`}>{f}</span></div>)}
+          </div>
+          <div className="relative z-10 px-5 pb-5 pt-3">
+            <Link href="/pricing/groq-agent" className="relative w-full flex items-center justify-center gap-2 py-3 rounded-sm border overflow-hidden transition-all hover:bg-white/5" style={{borderColor:`${GROQ_AGENT_PLAN.color}50`,background:`${GROQ_AGENT_PLAN.color}12`,color:GROQ_AGENT_PLAN.color}}>
+              <span className="font-mono text-[10px] tracking-[1.5px] uppercase">View Details</span>
+            </Link>
+          </div>
+        </div>
       </div>
       <div className="flex items-center justify-center gap-6 mt-10 font-mono text-[9px] text-white/25 flex-wrap">
         {['14-day free trial','Cancel anytime','Secure via Stripe','No hidden fees'].map(t=><span key={t} className="flex items-center gap-1.5"><span className="text-emeraldPulse">✓</span>{t}</span>)}
@@ -61,3 +83,6 @@ export default function PricingPage() {
     </div>
   );
 }
+
+
+

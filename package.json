@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "stripe:setup": "node scripts/setup-stripe.mjs",
+    "icons:pwa": "node scripts/generate-pwa-icons.mjs",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
     "predeploy": "node scripts/pre-deploy-check.mjs",
     "deploy": "vercel --prod",

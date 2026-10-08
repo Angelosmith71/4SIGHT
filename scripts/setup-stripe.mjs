@@ -9,6 +9,12 @@ const PRODUCTS = [
     { nickname:'Enterprise Monthly', unit_amount:9900, currency:'usd', interval:'month', env:'NEXT_PUBLIC_STRIPE_ENTERPRISE_MONTHLY' },
     { nickname:'Enterprise Yearly', unit_amount:89900, currency:'usd', interval:'year', env:'NEXT_PUBLIC_STRIPE_ENTERPRISE_YEARLY' },
   ]},
+  { name:'Guardian AI Family Watch', metadata:{plan_id:'familyWatch'}, prices:[
+    { nickname:'Family Watch Monthly', unit_amount:2000, currency:'usd', interval:'month', env:'NEXT_PUBLIC_STRIPE_FAMILY_WATCH_MONTHLY' },
+  ]},
+  { name:'Guardian AI Grok xAI Agent', metadata:{plan_id:'groqAgent'}, prices:[
+    { nickname:'Grok xAI Agent Monthly', unit_amount:1500, currency:'usd', interval:'month', env:'NEXT_PUBLIC_STRIPE_GROQ_AGENT_MONTHLY' },
+  ]},
 ];
 async function main() {
   console.log('\n🛡 Guardian AI — Stripe Setup\n'); const envLines=[];

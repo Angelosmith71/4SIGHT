@@ -274,3 +274,142 @@ do $$ begin
   alter publication supabase_realtime add table public.subscriptions;
 exception when duplicate_object then null;
 end $$;
+
+-- PART 3: Parental monitoring (Family Watch)
+-- ============================================================
+
+create table if not exists public.child_profiles (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  name text not null,
+  age int not null check (age > 0 and age < 18),
+  device text,
+  status text not null default 'offline' check (status in ('online','offline','restricted')),
+  avatar_icon text default 'ti-mood-kid',
+  screen_time_mins int default 0,
+  screen_time_limit_mins int default 120,
+  content_filter text not null default 'PG' check (content_filter in ('G','PG','PG-13','R')),
+  alerts_today int default 0,
+  created_at timestamptz default now()
+);
+
+alter table public.child_profiles add column if not exists screen_time_limit_mins int default 120;
+alter table public.child_profiles add column if not exists content_filter text default 'PG';
+update public.child_profiles set content_filter = 'PG' where content_filter is null;
+alter table public.child_profiles drop constraint if exists child_profiles_content_filter_check;
+alter table public.child_profiles add constraint child_profiles_content_filter_check check (content_filter in ('G','PG','PG-13','R'));
+
+create table if not exists public.viewing_activity (
+  id uuid default gen_random_uuid() primary key,
+  child_id uuid references public.child_profiles(id) on delete cascade not null,
+  child_name text not null,
+  platform text not null,
+  title text not null,
+  category text not null check (category in ('video','social','gaming','web','streaming')),
+  rating text not null check (rating in ('safe','review','flagged')),
+  duration_mins int default 0,
+  url text,
+  icon text default 'ti-world',
+  created_at timestamptz default now()
+);
+
+create table if not exists public.parental_alerts (
+  id uuid default gen_random_uuid() primary key,
+  child_id uuid references public.child_profiles(id) on delete cascade not null,
+  child_name text not null,
+  title text not null,
+  message text not null,
+  severity text not null check (severity in ('critical','high','medium','low')),
+  read boolean default false,
+  action_taken text check (action_taken in ('blocked','notified','logged')),
+  icon text default 'ti-bell',
+  created_at timestamptz default now()
+);
+
+alter table public.child_profiles enable row level security;
+alter table public.viewing_activity enable row level security;
+alter table public.parental_alerts enable row level security;
+
+drop policy if exists "child_profiles_owner" on public.child_profiles;
+create policy "child_profiles_owner" on public.child_profiles for all using (auth.uid() = user_id);
+
+drop policy if exists "viewing_activity_auth" on public.viewing_activity;
+create policy "viewing_activity_auth" on public.viewing_activity for select using (auth.role() = 'authenticated');
+drop policy if exists "viewing_activity_insert" on public.viewing_activity;
+create policy "viewing_activity_insert" on public.viewing_activity for insert using (auth.role() = 'authenticated');
+
+drop policy if exists "parental_alerts_auth" on public.parental_alerts;
+create policy "parental_alerts_auth" on public.parental_alerts for select using (auth.role() = 'authenticated');
+drop policy if exists "parental_alerts_update" on public.parental_alerts;
+create policy "parental_alerts_update" on public.parental_alerts for update using (auth.role() = 'authenticated');
+
+create table if not exists public.guardian_devices (
+  id uuid default gen_random_uuid() primary key,
+  child_id uuid references public.child_profiles(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  device_token text unique not null,
+  pairing_code text unique,
+  pairing_expires_at timestamptz,
+  device_name text not null default 'Chrome Device',
+  platform text default 'chrome',
+  extension_version text,
+  last_seen timestamptz,
+  created_at timestamptz default now()
+);
+
+alter table public.guardian_devices enable row level security;
+drop policy if exists "guardian_devices_owner" on public.guardian_devices;
+create policy "guardian_devices_owner" on public.guardian_devices for all using (auth.uid() = user_id);
+
+do $$ begin alter publication supabase_realtime add table public.parental_alerts; exception when duplicate_object then null; end $$;
+do $$ begin alter publication supabase_realtime add table public.viewing_activity; exception when duplicate_object then null; end $$;
+
+-- PART 4: Family Watch subscription (separate $20/mo plan)
+create table if not exists public.family_watch_subscriptions (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null unique,
+  stripe_customer_id text,
+  stripe_subscription_id text unique,
+  stripe_price_id text,
+  status text not null default 'inactive' check (status in ('inactive','trialing','active','canceled','past_due','incomplete')),
+  current_period_start timestamptz,
+  current_period_end timestamptz,
+  cancel_at_period_end boolean default false,
+  trial_end timestamptz,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+alter table public.family_watch_subscriptions enable row level security;
+drop policy if exists "family_watch_subscriptions_self" on public.family_watch_subscriptions;
+create policy "family_watch_subscriptions_self" on public.family_watch_subscriptions for select using (auth.uid() = user_id);
+drop policy if exists "family_watch_subscriptions_service" on public.family_watch_subscriptions;
+create policy "family_watch_subscriptions_service" on public.family_watch_subscriptions for all using (auth.role() = 'service_role');
+do $$ begin alter publication supabase_realtime add table public.family_watch_subscriptions; exception when duplicate_object then null; end $$;
+
+-- PART 5: Grok xAI Agent subscription (separate $15/mo plan, 500k tokens)
+create table if not exists public.groq_agent_subscriptions (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null unique,
+  stripe_customer_id text,
+  stripe_subscription_id text unique,
+  stripe_price_id text,
+  status text not null default 'inactive' check (status in ('inactive','trialing','active','canceled','past_due','incomplete')),
+  current_period_start timestamptz,
+  current_period_end timestamptz,
+  cancel_at_period_end boolean default false,
+  trial_end timestamptz,
+  tokens_used integer not null default 0,
+  token_period_start timestamptz,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+drop trigger if exists groq_agent_subscriptions_updated_at on public.groq_agent_subscriptions;
+create trigger groq_agent_subscriptions_updated_at
+  before update on public.groq_agent_subscriptions
+  for each row execute procedure public.set_updated_at();
+alter table public.groq_agent_subscriptions enable row level security;
+drop policy if exists "groq_agent_subscriptions_self" on public.groq_agent_subscriptions;
+create policy "groq_agent_subscriptions_self" on public.groq_agent_subscriptions for select using (auth.uid() = user_id);
+drop policy if exists "groq_agent_subscriptions_service" on public.groq_agent_subscriptions;
+create policy "groq_agent_subscriptions_service" on public.groq_agent_subscriptions for all using (auth.role() = 'service_role');
+do $$ begin alter publication supabase_realtime add table public.groq_agent_subscriptions; exception when duplicate_object then null; end $$;

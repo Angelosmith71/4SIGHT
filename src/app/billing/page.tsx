@@ -4,14 +4,17 @@ import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useFamilyWatchSubscription } from '@/hooks/useFamilyWatchSubscription';
+import { useGroqAgentSubscription } from '@/hooks/useGroqAgentSubscription';
 import { isFamilyWatchActive } from '@/lib/stripe/family-plan';
+import { isGroqAgentActive } from '@/lib/stripe/groq-plan';
 import { PageShell } from '@/components/layout/PageShell';
 import Link from 'next/link';
 function fmt(d:Date|null){if(!d)return'—';return d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}
 function BillingPageContent(){
   const{subscription,loading,openPortal}=useSubscription();
   const{subscription:fwSub,plan:fwPlan,loading:fwLoading,startTrial,openPortal:openFwPortal}=useFamilyWatchSubscription();
-  const[pl,setPl]=useState(false);const[fwPl,setFwPl]=useState(false);
+  const{subscription:groqSub,plan:groqPlan,loading:groqLoading,startTrial:startGroq,openPortal:openGroqPortal}=useGroqAgentSubscription();
+  const[pl,setPl]=useState(false);const[fwPl,setFwPl]=useState(false);const[groqPl,setGroqPl]=useState(false);
   const sp=useSearchParams();const success=sp.get('success');const newPlan=sp.get('plan');
   async function handlePortal(){setPl(true);try{await openPortal();}catch(e){console.error(e);}finally{setPl(false);}}
   const plan=subscription?.plan;const status=subscription?.status??'active';
@@ -66,6 +69,36 @@ function BillingPageContent(){
                     <motion.button onClick={async()=>{setFwPl(true);try{await startTrial();}catch(e){console.error(e);}finally{setFwPl(false);}}} disabled={fwPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${fwPlan.color}40`,color:fwPlan.color,background:`${fwPlan.color}08`}}>{fwPl?'Processing…':`Start ${fwPlan.trialDays}-day free trial`}</motion.button>
                   )}
                   <Link href="/pricing/family-watch" className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border border-white/15 text-white/40 text-center hover:text-white/60">View details</Link>
+                </div>
+              </div>
+            )}
+            {!groqLoading && (
+              <div className="relative flex flex-col gap-4 p-5 rounded-sm border overflow-hidden" style={{borderColor:`${groqPlan.color}35`,background:`${groqPlan.color}05`}}>
+                <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{borderColor:groqPlan.color}}/>
+                <div className="flex items-start justify-between flex-wrap gap-3">
+                  <div>
+                    <p className="font-mono text-[9px] text-white/25 uppercase tracking-[1px] mb-1">Grok xAI Agent</p>
+                    <h2 className="font-rajdhani font-bold text-xl" style={{color:groqPlan.color}}>{groqPlan.name}</h2>
+                    <p className="font-mono text-[9px] text-white/35 mt-1">${groqPlan.monthlyPrice/100}/mo · {groqPlan.trialDays}-day trial · {(groqPlan.monthlyTokenCap/1000).toLocaleString()}k tokens</p>
+                  </div>
+                  <span className="font-mono text-[10px] uppercase" style={{color:isGroqAgentActive(groqSub?.status)?groqPlan.color:'#666'}}>{groqSub?.status??'inactive'}</span>
+                </div>
+                {isGroqAgentActive(groqSub?.status) ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    <div><span className="font-mono text-[8px] text-white/25 uppercase">Trial ends</span><p className="font-mono text-[11px] text-white/70">{fmt(groqSub?.trialEnd??null)}</p></div>
+                    <div><span className="font-mono text-[8px] text-white/25 uppercase">Renews</span><p className="font-mono text-[11px] text-white/70">{fmt(groqSub?.currentPeriodEnd??null)}</p></div>
+                    <div><span className="font-mono text-[8px] text-white/25 uppercase">Tokens</span><p className="font-mono text-[11px] text-white/70">{(groqSub?.tokensUsed??0).toLocaleString()} / {groqPlan.monthlyTokenCap.toLocaleString()}</p></div>
+                  </div>
+                ) : (
+                  <p className="font-mono text-[10px] text-white/35">Paid Grok (xAI) add-on — not included in Pro, Enterprise, or Grok Advisor.</p>
+                )}
+                <div className="flex flex-col md:flex-row gap-3">
+                  {isGroqAgentActive(groqSub?.status) ? (
+                    <motion.button onClick={async()=>{setGroqPl(true);try{await openGroqPortal();}finally{setGroqPl(false);}}} disabled={groqPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${groqPlan.color}40`,color:groqPlan.color,background:`${groqPlan.color}08`}}>{groqPl?'Opening…':'Manage Grok xAI Agent · cancel anytime'}</motion.button>
+                  ) : (
+                    <motion.button onClick={async()=>{setGroqPl(true);try{await startGroq();}catch(e){console.error(e);}finally{setGroqPl(false);}}} disabled={groqPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${groqPlan.color}40`,color:groqPlan.color,background:`${groqPlan.color}08`}}>{groqPl?'Processing…':`Start ${groqPlan.trialDays}-day free trial`}</motion.button>
+                  )}
+                  <Link href="/pricing/groq-agent" className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border border-white/15 text-white/40 text-center hover:text-white/60">View details</Link>
                 </div>
               </div>
             )}

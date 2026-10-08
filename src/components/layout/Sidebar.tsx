@@ -4,12 +4,14 @@ import { usePathname } from 'next/navigation';
 import { NAV_ROUTES } from '@/utils/navRoutes';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useFamilyWatchSubscription } from '@/hooks/useFamilyWatchSubscription';
+import { useGroqAgentSubscription } from '@/hooks/useGroqAgentSubscription';
 import { isDemoMode } from '@/lib/demo';
 import type { NavRoute } from '@/types';
 const GATED: Record<string,'botMonitor'|'analytics'|'reports'|'realtime'> = { '/dashboard/bot-monitor':'botMonitor', '/dashboard/analytics':'analytics', '/dashboard/reports':'reports', '/dashboard/live-feed':'realtime' };
 export function Sidebar() {
   const pathname=usePathname(); const{subscription,can}=useSubscription();
   const { hasAccess: hasFamilyWatch } = useFamilyWatchSubscription();
+  const { hasAccess: hasGroqAgent } = useGroqAgentSubscription();
   const demo=isDemoMode();
   return (
     <nav className="flex flex-col bg-graphite/60 border-r border-electricCyan/10 py-4 gap-0.5">
@@ -19,8 +21,11 @@ export function Sidebar() {
           {NAV_ROUTES.filter(r=>r.section===sec).map(route=>{
             const gf=GATED[route.href];
             const isFamily=route.href==='/dashboard/parental-monitor';
-            const locked=!demo?(isFamily?!hasFamilyWatch:(gf?!can(gf):false)):false;
-            return <NavItem key={route.href} route={route} active={pathname===route.href} locked={locked}/>;
+            const isGroq=route.href==='/dashboard/groq-agent';
+            const locked=!demo&&(isFamily?!hasFamilyWatch:isGroq?!hasGroqAgent:gf?!can(gf):false);
+            const lockLabel=isFamily?'FW':isGroq?'GX':undefined;
+            const lockHref=isFamily?'/pricing/family-watch':isGroq?'/pricing/groq-agent':undefined;
+            return <NavItem key={route.href} route={route} active={pathname===route.href} locked={locked} lockLabel={lockLabel} lockHref={lockHref}/>;
           })}
         </div>
       ))}
@@ -36,7 +41,7 @@ export function Sidebar() {
     </nav>
   );
 }
-function NavItem({ route, active, locked }: { route:NavRoute; active:boolean; locked:boolean }) {
-  if(locked) return <Link href="/pricing" className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium border-l-2 border-transparent text-white/20 hover:text-white/35 transition-colors"><span className="text-base opacity-40">{route.icon}</span><span className="flex-1">{route.label}</span><span className="font-mono text-[8px] px-1.5 py-0.5 rounded-sm border border-plasmaViolet/30 text-plasmaViolet/60">PRO</span></Link>;
+function NavItem({ route, active, locked, lockLabel, lockHref }: { route:NavRoute; active:boolean; locked:boolean; lockLabel?:string; lockHref?:string }) {
+  if(locked) return <Link href={lockHref??'/pricing'} className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium border-l-2 border-transparent text-white/20 hover:text-white/35 transition-colors"><span className="text-base opacity-40">{route.icon}</span><span className="flex-1">{route.label}</span><span className={`font-mono text-[8px] px-1.5 py-0.5 rounded-sm border ${lockLabel==='FW'?'border-emeraldPulse/30 text-emeraldPulse/60':lockLabel==='GX'?'border-solarAmber/30 text-solarAmber/70':'border-plasmaViolet/30 text-plasmaViolet/60'}`}>{lockLabel??'PRO'}</span></Link>;
   return <Link href={route.href} className={`flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium border-l-2 transition-all ${active?'text-electricCyan border-electricCyan bg-electricCyan/5':'text-white/40 border-transparent hover:text-white/70 hover:bg-electricCyan/[0.03]'}`}><span className="text-base">{route.icon}</span><span className="flex-1">{route.label}</span>{route.badge!==undefined&&<span className="bg-neoCrimson text-white text-[10px] font-mono px-1.5 py-0.5 rounded-[3px]">{route.badge}</span>}</Link>;
 }
