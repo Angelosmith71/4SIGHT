@@ -23,7 +23,7 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
         <a href="#features" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
         <a href="#pricing" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
         <Link href="/about" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
-        <a href="mailto:info@4sightgurdianai.com" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">info@4sightgurdianai.com</a>
+        <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">INFO@4SIGHTGUARDIANAI.NET</a>
         <button onClick={onContactClick} className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px] focus:outline-none">Contact</button>
       </div>
       <div className="flex items-center gap-3">
@@ -51,7 +51,7 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{background:'radial-gradient(ellipse 80% 70% at 50% -10%,rgba(164,92,255,0.14) 0%,transparent 65%)'}}/>
-        <motion.div className="absolute left-0 right-0 h-px pointer-events-none" style={{background:'linear-gradient(90deg,transparent,rgba(0,230,255,0.2),transparent)'}} animate={{top:['0%','100%']}} transition={{duration:5,repeat:Infinity,ease:'linear'}}/>
+        <motion.div className="absolute top-0 left-0 right-0 h-px pointer-events-none" style={{background:'linear-gradient(90deg,transparent,rgba(0,230,255,0.2),transparent)'}} animate={{y:['0vh','100vh']}} transition={{duration:5,repeat:Infinity,ease:'linear'}}/>
         <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}} className="inline-flex items-center gap-2 font-mono text-[9px] tracking-[2px] uppercase px-4 py-2 rounded-full border border-electricCyan/20 bg-electricCyan/6 text-electricCyan/70 mb-6">
           <motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:1.5,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/>AI-Powered Privacy Shield — Real-Time Protection
         </motion.div>
@@ -135,7 +135,7 @@ export default function LandingPage() {
               <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
             )
           )}
-          <a href="mailto:info@4sightgurdianai.com" className="text-white/25 hover:text-electricCyan transition-colors uppercase ml-2 border-l border-white/10 pl-4">info@4sightgurdianai.com</a>
+          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/25 hover:text-electricCyan transition-colors uppercase ml-2 border-l border-white/10 pl-4">INFO@4SIGHTGUARDIANAI.NET</a>
         </div>
         <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/18 italic">Analyzing AI threats in real time...</span></div>
       </footer>
