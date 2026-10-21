@@ -59,17 +59,13 @@ export default function AboutPage(){
           <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" />
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
-        <div className="flex gap-5 font-mono text-[9px] items-center">
-          {[['Home','/'],['Services','/services'],['About','/about'],['Pricing','/pricing'],['Contact','contact']].map(([l,h])=>
-            h === 'contact' ? (
-              <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
-            ) : (
-              <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
-            )
-          )}
-          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/25 hover:text-electricCyan transition-colors uppercase ml-2 border-l border-white/10 pl-4">INFO@4SIGHTGUARDIANAI.NET</a>
+        <p className="font-mono text-[10px] text-white/30">
+          © {new Date().getFullYear()} 4Sight Guardian AI. All rights reserved.
+        </p>
+        <div className="flex items-center gap-4">
+          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="font-mono text-[9px] text-white/30 hover:text-electricCyan transition-colors uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
+          <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/20 italic">Analyzing AI threats in real time...</span></div>
         </div>
-        <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/20 italic">Analyzing AI threats in real time...</span></div>
       </footer>
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>

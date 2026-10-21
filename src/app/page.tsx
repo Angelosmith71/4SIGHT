@@ -12,25 +12,39 @@ function Counter({ end, decimals=0, suffix='+', color }: { end:number; decimals?
 
 function Navbar({ onContactClick }: { onContactClick: () => void }) {
   const [scrolled,setScrolled]=useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen]=useState(false);
   useEffect(()=>{ const fn=()=>setScrolled(window.scrollY>20); window.addEventListener('scroll',fn); return()=>window.removeEventListener('scroll',fn); },[]);
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-[60px] transition-all ${scrolled?'bg-deepVoid/90 backdrop-blur-xl border-b border-electricCyan/10':'bg-transparent'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-[64px] transition-all ${scrolled?'bg-deepVoid/95 backdrop-blur-xl border-b border-electricCyan/15 shadow-[0_4px_20px_rgba(0,0,0,0.5)]':'bg-deepVoid/85 backdrop-blur-md border-b border-white/10'}`}>
       <Link href="/" className="flex items-center gap-3 font-rajdhani font-bold text-lg tracking-[3px]">
         <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-10 h-10 rounded-md object-cover border border-electricCyan/50 shadow-[0_0_15px_rgba(0,230,255,0.35)] flex-shrink-0" />
-        <span className="hidden md:inline">4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
+        <span className="inline">4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
       </Link>
-      <div className="hidden lg:flex gap-7 font-mono text-[10px]">
-        <Link href="/services" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Services</Link>
-        <a href="#features" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
-        <a href="#pricing" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
-        <Link href="/about" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
-        <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">INFO@4SIGHTGUARDIANAI.NET</a>
-        <button onClick={onContactClick} className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px] focus:outline-none">Contact</button>
+      <div className="hidden md:flex gap-6 lg:gap-7 font-mono text-[11px] items-center">
+        <Link href="/services" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Services</Link>
+        <a href="#features" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
+        <a href="#pricing" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
+        <Link href="/about" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
+        <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/45 hover:text-electricCyan transition-colors uppercase tracking-[1px]">INFO@4SIGHTGUARDIANAI.NET</a>
+        <button onClick={onContactClick} className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px] focus:outline-none">Contact</button>
       </div>
       <div className="flex items-center gap-3">
-        <Link href="/login"><motion.button whileHover={{scale:1.04}} whileTap={{scale:0.96}} className="font-mono text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-sm border border-white/15 text-white/50 hover:border-electricCyan/40 hover:text-electricCyan transition-all">Log In</motion.button></Link>
+        <Link href="/login"><motion.button whileHover={{scale:1.04}} whileTap={{scale:0.96}} className="font-mono text-[10px] tracking-[1.5px] uppercase px-4 py-2 rounded-sm border border-white/15 text-white/70 hover:border-electricCyan/40 hover:text-electricCyan transition-all">Log In</motion.button></Link>
         <Link href="/signup" className="hidden sm:inline-block"><motion.button whileHover={{scale:1.04,boxShadow:'0 0 20px rgba(164,92,255,0.4)'}} whileTap={{scale:0.96}} className="relative font-mono text-[10px] tracking-[1.5px] uppercase px-5 py-2 rounded-sm border border-plasmaViolet/50 text-plasmaViolet bg-plasmaViolet/12 overflow-hidden"><span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-plasmaViolet/60"/><span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-plasmaViolet/60"/>» Get Started Free</motion.button></Link>
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-white/70 hover:text-electricCyan p-1 focus:outline-none" aria-label="Toggle Menu">
+          <span className="text-lg">☰</span>
+        </button>
       </div>
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-[64px] left-0 right-0 bg-deepVoid/98 border-b border-electricCyan/20 p-5 flex flex-col gap-4 font-mono text-[11px] shadow-2xl backdrop-blur-2xl">
+          <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">Services</Link>
+          <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">Features</a>
+          <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">Pricing</a>
+          <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">About</Link>
+          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/50 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
+          <button onClick={() => { setMobileMenuOpen(false); onContactClick(); }} className="text-left text-white/70 hover:text-electricCyan uppercase">Contact</button>
+        </div>
+      )}
     </nav>
   );
 }
@@ -129,17 +143,13 @@ export default function LandingPage() {
           <img src="/guardian-ai-logo.jpeg" alt="Guardian AI Logo" className="w-7 h-7 rounded-md object-cover border border-electricCyan/40 shadow-[0_0_10px_rgba(0,230,255,0.25)] flex-shrink-0" />
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
-        <div className="flex gap-5 font-mono text-[9px] items-center">
-          {[['Services','/services'],['About','/about'],['Pricing','/pricing'],['Contact','contact'],['Login','/login'],['Sign Up','/signup']].map(([l,h])=>
-            h === 'contact' ? (
-              <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
-            ) : (
-              <Link key={l} href={h} className="text-white/25 hover:text-electricCyan transition-colors uppercase">{l}</Link>
-            )
-          )}
-          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/25 hover:text-electricCyan transition-colors uppercase ml-2 border-l border-white/10 pl-4">INFO@4SIGHTGUARDIANAI.NET</a>
+        <p className="font-mono text-[10px] text-white/30">
+          © {new Date().getFullYear()} 4Sight Guardian AI. All rights reserved.
+        </p>
+        <div className="flex items-center gap-4">
+          <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="font-mono text-[9px] text-white/30 hover:text-electricCyan transition-colors uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
+          <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/18 italic">Analyzing AI threats in real time...</span></div>
         </div>
-        <div className="flex items-center gap-2"><motion.span animate={{opacity:[1,0.2,1]}} transition={{duration:2,repeat:Infinity}} className="w-1.5 h-1.5 rounded-full bg-electricCyan"/><span className="font-mono text-[9px] text-white/18 italic">Analyzing AI threats in real time...</span></div>
       </footer>
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
