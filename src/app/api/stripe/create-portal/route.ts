@@ -8,15 +8,19 @@ export async function POST(_: NextRequest) {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { data: sub } = await sb.from('subscriptions').select('stripe_customer_id').eq('user_id', user.id).single();
+    const { data: sub } = await sb.from('subscriptions').select('stripe_customer_id').eq('user_id', user.id).maybeSingle();
     let customerId = sub?.stripe_customer_id as string | undefined;
     if (!customerId) {
-      const { data: groq } = await sb.from('groq_agent_subscriptions').select('stripe_customer_id').eq('user_id', user.id).single();
+      const { data: groq } = await sb.from('groq_agent_subscriptions').select('stripe_customer_id').eq('user_id', user.id).maybeSingle();
       customerId = groq?.stripe_customer_id ?? undefined;
     }
     if (!customerId) {
-      const { data: fw } = await sb.from('family_watch_subscriptions').select('stripe_customer_id').eq('user_id', user.id).single();
+      const { data: fw } = await sb.from('family_watch_subscriptions').select('stripe_customer_id').eq('user_id', user.id).maybeSingle();
       customerId = fw?.stripe_customer_id ?? undefined;
+    }
+    if (!customerId) {
+      const { data: protocol } = await sb.from('protocol_watch_subscriptions').select('stripe_customer_id').eq('user_id', user.id).maybeSingle();
+      customerId = protocol?.stripe_customer_id ?? undefined;
     }
     if (!customerId) return NextResponse.json({ error: 'No billing account' }, { status: 404 });
 

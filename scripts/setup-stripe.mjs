@@ -15,6 +15,9 @@ const PRODUCTS = [
   { name:'Guardian AI Grok xAI Agent', metadata:{plan_id:'groqAgent'}, prices:[
     { nickname:'Grok xAI Agent Monthly', unit_amount:1500, currency:'usd', interval:'month', env:'NEXT_PUBLIC_STRIPE_GROQ_AGENT_MONTHLY' },
   ]},
+  { name:'Guardian AI Protocol Watch', metadata:{plan_id:'protocolWatch'}, prices:[
+    { nickname:'Protocol Watch Monthly', unit_amount:4900, currency:'usd', interval:'month', env:'NEXT_PUBLIC_STRIPE_PROTOCOL_WATCH_MONTHLY' },
+  ]},
 ];
 async function main() {
   console.log('\n🛡 Guardian AI — Stripe Setup\n'); const envLines=[];

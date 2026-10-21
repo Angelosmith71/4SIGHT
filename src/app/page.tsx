@@ -20,6 +20,7 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
         <span className="hidden md:inline">4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
       </Link>
       <div className="hidden lg:flex gap-7 font-mono text-[10px]">
+        <Link href="/services" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Services</Link>
         <a href="#features" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
         <a href="#pricing" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
         <Link href="/about" className="text-white/38 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
@@ -37,10 +38,11 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
 const FEATURES=[{icon:'ti-shield-bolt',color:'#FF2E4C',title:'Cookie Shield',desc:'Blocks third-party tracking cookies before they profile your behaviour across the web.'},{icon:'ti-robot',color:'#A45CFF',title:'AI Bot Monitor',desc:'Detects rogue AI bots attempting clipboard access, cookie scanning, or history harvesting.'},{icon:'ti-radar',color:'#00E6FF',title:'Tracker Defense',desc:'Neutralizes cross-site trackers and behavioral fingerprinting scripts in real time.'},{icon:'ti-database-lock',color:'#00FF9C',title:'Data Watch',desc:'Monitors for unusual outbound data transfers and unauthorized access attempts.'},{icon:'ti-activity',color:'#FFB648',title:'Live Feed',desc:'Real-time event stream showing every threat detected, blocked, and neutralized.'},{icon:'ti-chart-dots',color:'#A45CFF',title:'Analytics',desc:'Deep threat analytics, attack breakdowns, and exportable compliance reports.'}];
 const PLANS=[
   {name:'Free',price:'$0',period:'forever',color:'#00E6FF',popular:false,features:['10 threat detections','1 neural agent','7-day log retention','Cookie Shield'],locked:['Bot Monitor','Analytics'],cta:'Get Started Free',href:'/signup'},
-  {name:'Family Watch',price:'$20',period:'/mo · 7-day free trial',color:'#00FF9C',popular:false,features:['Monitor viewing activity','Per-child content filters','Daily screen time limits','Instant parent alerts','Cancel anytime'],locked:['Main AI features'],cta:'Start Family Trial',href:'/pricing/family-watch'},
   {name:'Pro',price:'$49',period:'/mo · $449/yr saves 10%',color:'#A45CFF',popular:true,features:['Unlimited threats','All 6 neural agents','90-day log retention','Bot Monitor','Analytics & Reports','5 team members'],locked:[],cta:'Start Pro Trial',href:'/signup'},
   {name:'Enterprise',price:'$99',period:'/mo · $899/yr saves 10%',color:'#FF2E4C',popular:false,features:['Unlimited everything','Unlimited agents','365-day logs','Priority support + SLA','Unlimited team members','Custom agents'],locked:[],cta:'Start Enterprise Trial',href:'/signup'},
-  {name:'Grok xAI',price:'$15',period:'/mo · 7-day free trial',color:'#FFB648',popular:false,features:['Grok (xAI) chat','Live dashboard context','500,000 tokens/mo','Separate from Pro','Cancel anytime'],locked:[],cta:'View Details',href:'/pricing/groq-agent'}
+  {name:'Family Watch',price:'$20',period:'/mo · 7-day free trial',color:'#00FF9C',popular:false,features:['Monitor viewing activity','Per-child content filters','Daily screen time limits','Instant parent alerts','Cancel anytime'],locked:['Main AI features'],cta:'Start Family Trial',href:'/pricing/family-watch'},
+  {name:'Grok xAI',price:'$15',period:'/mo · 7-day free trial',color:'#FFB648',popular:false,features:['Grok (xAI) chat','Live dashboard context','500,000 tokens/mo','Separate from Pro','Cancel anytime'],locked:[],cta:'View Details',href:'/pricing/groq-agent'},
+  {name:'Protocol Check',price:'$49',period:'/mo · 7-day free trial',color:'#00E6FF',popular:false,features:['Up to 3 AI bots','PASS / FAIL per step','Custom protocol rules','Live dashboard alerts','Cancel anytime'],locked:[],cta:'View Details',href:'/pricing/protocol-watch'}
 ];
 
 export default function LandingPage() {
@@ -90,9 +92,9 @@ export default function LandingPage() {
         </div>
       </section>
       {/* PRICING */}
-      <section id="pricing" className="max-w-[1400px] mx-auto px-6 py-20 border-t border-white/5">
+      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 border-t border-white/5">
         <div className="text-center mb-12"><p className="font-mono text-[9px] tracking-[3px] text-electricCyan/40 uppercase mb-3">// subscription plans</p><h2 className="font-rajdhani font-bold text-3xl md:text-4xl text-white">Choose Your <span className="text-electricCyan">Shield</span></h2></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PLANS.map(p=>(
             <motion.div key={p.name} initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className={`relative flex flex-col rounded-sm border bg-[rgba(10,8,14,0.9)] overflow-hidden hover:-translate-y-1 transition-all ${p.popular?'scale-[1.03]':''}`} style={{borderColor:`${p.color}35`}}>
               <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2" style={{borderColor:p.color}}/><span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2" style={{borderColor:p.color}}/>
@@ -128,7 +130,7 @@ export default function LandingPage() {
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
         <div className="flex gap-5 font-mono text-[9px] items-center">
-          {[['About','/about'],['Pricing','/pricing'],['Contact','contact'],['Login','/login'],['Sign Up','/signup']].map(([l,h])=>
+          {[['Services','/services'],['About','/about'],['Pricing','/pricing'],['Contact','contact'],['Login','/login'],['Sign Up','/signup']].map(([l,h])=>
             h === 'contact' ? (
               <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
             ) : (

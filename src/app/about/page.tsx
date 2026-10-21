@@ -19,6 +19,7 @@ export default function AboutPage(){
         </Link>
         <div className="hidden md:flex gap-6 font-mono text-[10px]">
           <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
+          <Link href="/services" className="text-white/35 hover:text-electricCyan uppercase">Services</Link>
           <span className="text-electricCyan uppercase">About</span>
           <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/35 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
           <Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link>
@@ -59,7 +60,7 @@ export default function AboutPage(){
           <span>4SIGHT <span className="text-electricCyan">GUARDIAN AI</span></span>
         </div>
         <div className="flex gap-5 font-mono text-[9px] items-center">
-          {[['Home','/'],['About','/about'],['Pricing','/pricing'],['Contact','contact']].map(([l,h])=>
+          {[['Home','/'],['Services','/services'],['About','/about'],['Pricing','/pricing'],['Contact','contact']].map(([l,h])=>
             h === 'contact' ? (
               <button key={l} onClick={() => setIsContactOpen(true)} className="text-white/25 hover:text-electricCyan transition-colors uppercase focus:outline-none">{l}</button>
             ) : (

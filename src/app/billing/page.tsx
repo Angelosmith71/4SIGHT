@@ -5,8 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useFamilyWatchSubscription } from '@/hooks/useFamilyWatchSubscription';
 import { useGroqAgentSubscription } from '@/hooks/useGroqAgentSubscription';
+import { useProtocolWatchSubscription } from '@/hooks/useProtocolWatchSubscription';
 import { isFamilyWatchActive } from '@/lib/stripe/family-plan';
 import { isGroqAgentActive } from '@/lib/stripe/groq-plan';
+import { isProtocolWatchActive } from '@/lib/stripe/protocol-plan';
 import { PageShell } from '@/components/layout/PageShell';
 import Link from 'next/link';
 function fmt(d:Date|null){if(!d)return'—';return d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}
@@ -14,7 +16,8 @@ function BillingPageContent(){
   const{subscription,loading,openPortal}=useSubscription();
   const{subscription:fwSub,plan:fwPlan,loading:fwLoading,startTrial,openPortal:openFwPortal}=useFamilyWatchSubscription();
   const{subscription:groqSub,plan:groqPlan,loading:groqLoading,startTrial:startGroq,openPortal:openGroqPortal}=useGroqAgentSubscription();
-  const[pl,setPl]=useState(false);const[fwPl,setFwPl]=useState(false);const[groqPl,setGroqPl]=useState(false);
+  const{subscription:pwSub,plan:pwPlan,loading:pwLoading,startTrial:startProtocol,openPortal:openProtocolPortal}=useProtocolWatchSubscription();
+  const[pl,setPl]=useState(false);const[fwPl,setFwPl]=useState(false);const[groqPl,setGroqPl]=useState(false);const[pwPl,setPwPl]=useState(false);
   const sp=useSearchParams();const success=sp.get('success');const newPlan=sp.get('plan');
   async function handlePortal(){setPl(true);try{await openPortal();}catch(e){console.error(e);}finally{setPl(false);}}
   const plan=subscription?.plan;const status=subscription?.status??'active';
@@ -99,6 +102,35 @@ function BillingPageContent(){
                     <motion.button onClick={async()=>{setGroqPl(true);try{await startGroq();}catch(e){console.error(e);}finally{setGroqPl(false);}}} disabled={groqPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${groqPlan.color}40`,color:groqPlan.color,background:`${groqPlan.color}08`}}>{groqPl?'Processing…':`Start ${groqPlan.trialDays}-day free trial`}</motion.button>
                   )}
                   <Link href="/pricing/groq-agent" className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border border-white/15 text-white/40 text-center hover:text-white/60">View details</Link>
+                </div>
+              </div>
+            )}
+            {!pwLoading && (
+              <div className="relative flex flex-col gap-4 p-5 rounded-sm border overflow-hidden" style={{borderColor:`${pwPlan.color}35`,background:`${pwPlan.color}05`}}>
+                <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{borderColor:pwPlan.color}}/>
+                <div className="flex items-start justify-between flex-wrap gap-3">
+                  <div>
+                    <p className="font-mono text-[9px] text-white/25 uppercase tracking-[1px] mb-1">Protocol Check</p>
+                    <h2 className="font-rajdhani font-bold text-xl" style={{color:pwPlan.color}}>{pwPlan.name}</h2>
+                    <p className="font-mono text-[9px] text-white/35 mt-1">${pwPlan.monthlyPrice/100}/mo · {pwPlan.trialDays}-day trial · {pwPlan.botLimit} bots</p>
+                  </div>
+                  <span className="font-mono text-[10px] uppercase" style={{color:isProtocolWatchActive(pwSub?.status)?pwPlan.color:'#666'}}>{pwSub?.status??'inactive'}</span>
+                </div>
+                {isProtocolWatchActive(pwSub?.status) ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><span className="font-mono text-[8px] text-white/25 uppercase">Trial ends</span><p className="font-mono text-[11px] text-white/70">{fmt(pwSub?.trialEnd??null)}</p></div>
+                    <div><span className="font-mono text-[8px] text-white/25 uppercase">Renews</span><p className="font-mono text-[11px] text-white/70">{fmt(pwSub?.currentPeriodEnd??null)}</p></div>
+                  </div>
+                ) : (
+                  <p className="font-mono text-[10px] text-white/35">Checks business bots against the protocol you write. Not included in Pro or Enterprise.</p>
+                )}
+                <div className="flex flex-col md:flex-row gap-3">
+                  {isProtocolWatchActive(pwSub?.status) ? (
+                    <motion.button onClick={async()=>{setPwPl(true);try{await openProtocolPortal();}finally{setPwPl(false);}}} disabled={pwPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${pwPlan.color}40`,color:pwPlan.color,background:`${pwPlan.color}08`}}>{pwPl?'Opening…':'Manage Protocol Check · cancel anytime'}</motion.button>
+                  ) : (
+                    <motion.button onClick={async()=>{setPwPl(true);try{await startProtocol();}catch(e){console.error(e);}finally{setPwPl(false);}}} disabled={pwPl} className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border disabled:opacity-50" style={{borderColor:`${pwPlan.color}40`,color:pwPlan.color,background:`${pwPlan.color}08`}}>{pwPl?'Processing…':`Start ${pwPlan.trialDays}-day free trial`}</motion.button>
+                  )}
+                  <Link href="/pricing/protocol-watch" className="font-mono text-[10px] tracking-[1.5px] uppercase px-6 py-3 rounded-sm border border-white/15 text-white/40 text-center hover:text-white/60">View details</Link>
                 </div>
               </div>
             )}

@@ -10,6 +10,6 @@ export const NAV_ROUTES: NavRoute[] = [
   { section:'analyze', label:'Analytics',   href:'/dashboard/analytics',   icon:'📈' },
   { section:'analyze', label:'Reports',     href:'/dashboard/reports',     icon:'📄' },
   { section:'analyze', label:'Logs',        href:'/dashboard/logs',        icon:'🗄' },
-  { section:'system',  label:'Agents',      href:'/dashboard/agents',      icon:'👥' },
+  { section:'system',  label:'Protocol Check', href:'/dashboard/protocol-watch', icon:'🔐' },
   { section:'system',  label:'Config',      href:'/dashboard/config',      icon:'⚙️' },
 ];

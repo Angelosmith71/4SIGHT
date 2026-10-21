@@ -3,6 +3,7 @@ import { stripe } from '@/lib/stripe/client';
 import { createServiceClient } from '@/lib/supabase/server';
 import { cancelFamilyWatchSubscription, isFamilyWatchPrice, upsertFamilyWatchSubscription } from '@/app/api/stripe/family-webhook-helpers';
 import { cancelGroqAgentSubscription, isGroqAgentPrice, upsertGroqAgentSubscription } from '@/app/api/stripe/groq-webhook-helpers';
+import { cancelProtocolWatchSubscription, isProtocolWatchPrice, upsertProtocolWatchSubscription } from '@/app/api/stripe/protocol-webhook-helpers';
 import type Stripe from 'stripe';
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -23,7 +24,7 @@ function toIsoDate(timestamp?: number | null): string | null {
 
 async function upsertMainSubscription(sb: ReturnType<typeof createServiceClient>, sub: Stripe.Subscription) {
   const priceId = sub.items.data[0]?.price?.id ?? '';
-  if (isFamilyWatchPrice(priceId, sub.metadata) || isGroqAgentPrice(priceId, sub.metadata)) return;
+  if (isFamilyWatchPrice(priceId, sub.metadata) || isGroqAgentPrice(priceId, sub.metadata) || isProtocolWatchPrice(priceId, sub.metadata)) return;
 
   const userId = sub.metadata?.supabase_user_id;
   let resolvedId = userId;
@@ -57,6 +58,8 @@ async function handleSubscription(sb: ReturnType<typeof createServiceClient>, su
     await upsertFamilyWatchSubscription(sb, sub);
   } else if (isGroqAgentPrice(priceId, sub.metadata)) {
     await upsertGroqAgentSubscription(sb, sub);
+  } else if (isProtocolWatchPrice(priceId, sub.metadata)) {
+    await upsertProtocolWatchSubscription(sb, sub);
   } else {
     await upsertMainSubscription(sb, sub);
   }
@@ -93,6 +96,8 @@ export async function POST(request: NextRequest) {
         await cancelFamilyWatchSubscription(sb, sub.id);
       } else if (isGroqAgentPrice(priceId, sub.metadata)) {
         await cancelGroqAgentSubscription(sb, sub.id);
+      } else if (isProtocolWatchPrice(priceId, sub.metadata)) {
+        await cancelProtocolWatchSubscription(sb, sub.id);
       } else {
         await sb.from('subscriptions').update({
           plan_id: 'free', status: 'canceled', stripe_subscription_id: null, stripe_price_id: null, billing_interval: null,
@@ -107,6 +112,8 @@ export async function POST(request: NextRequest) {
           await sb.from('family_watch_subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
         } else if (isGroqAgentPrice(priceId, sub.metadata)) {
           await sb.from('groq_agent_subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
+        } else if (isProtocolWatchPrice(priceId, sub.metadata)) {
+          await sb.from('protocol_watch_subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
         } else {
           await sb.from('subscriptions').update({ status: 'past_due' }).eq('stripe_subscription_id', sub.id);
         }

@@ -1,14 +1,31 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { PageShell } from '@/components/layout/PageShell';
 import { useMetrics, useParentalMonitoring } from '@/hooks/useData';
+import { isDemoMode } from '@/lib/demo';
+import { latestProtocolFailure } from '@/lib/protocol/demo-store';
 
 export function Dashboard() {
   const { metrics, loading } = useMetrics();
   const { children, unreadAlerts, alerts, loading: parentalLoading } = useParentalMonitoring();
 
   const latestAlert = (alerts ?? []).find(a => a && !a.read);
+  const [protocolAlert, setProtocolAlert] = useState<{ botName: string; alert: string } | null>(null);
+
+  useEffect(() => {
+    if (isDemoMode()) {
+      setProtocolAlert(latestProtocolFailure());
+      return;
+    }
+    void fetch('/api/protocol/alerts')
+      .then(res => res.json())
+      .then(json => {
+        if (json?.alert) setProtocolAlert({ botName: json.botName ?? 'Bot', alert: json.alert });
+      })
+      .catch(() => undefined);
+  }, []);
 
   const privacyScore = Number(metrics?.privacy_score ?? 86);
   const threatsBlocked = Number(metrics?.threats_blocked ?? 1247);
@@ -68,6 +85,27 @@ export function Dashboard() {
             </div>
             <span className="font-mono text-[9px] tracking-[1px] uppercase px-3 py-1.5 rounded-sm border border-solarAmber/40 text-solarAmber">Open agent →</span>
           </div>
+        </Link>
+
+        <Link href="/dashboard/protocol-watch"
+          className="relative block p-5 rounded-sm border border-electricCyan/25 bg-electricCyan/5 hover:bg-electricCyan/10 transition-colors overflow-hidden group">
+          <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-electricCyan/50" />
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="font-mono text-[9px] tracking-[2px] text-electricCyan/60 uppercase">Protocol Check · $49/mo</p>
+              <h2 className="font-rajdhani font-bold text-lg text-white group-hover:text-electricCyan transition-colors">Business bot check</h2>
+              <p className="font-mono text-[10px] text-white/35 mt-1 max-w-md">Check that connected AI bots stay inside the protocol you write. 7-day trial, then $49/mo for 3 bots.</p>
+            </div>
+            <span className="font-mono text-[9px] tracking-[1px] uppercase px-3 py-1.5 rounded-sm border border-electricCyan/40 text-electricCyan">Open check →</span>
+          </div>
+          {protocolAlert && (
+            <div className="mt-3 pt-3 border-t border-electricCyan/15 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-neoCrimson animate-pulse" />
+              <p className="font-mono text-[10px] text-white/45 truncate">
+                <span className="text-neoCrimson">{protocolAlert.botName}:</span> {protocolAlert.alert}
+              </p>
+            </div>
+          )}
         </Link>
 
         {/* Family Watch summary */}

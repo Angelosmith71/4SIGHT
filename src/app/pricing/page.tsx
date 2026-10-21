@@ -9,6 +9,7 @@ import { isFamilyWatchActive } from '@/lib/stripe/family-plan';
 import { isGroqAgentActive } from '@/lib/stripe/groq-plan';
 import { FAMILY_WATCH_PLAN } from '@/lib/stripe/family-plan';
 import { GROQ_AGENT_PLAN } from '@/lib/stripe/groq-plan';
+import { PROTOCOL_WATCH_PLAN } from '@/lib/stripe/protocol-plan';
 import { ContactModal } from '@/components/ui/ContactModal';
 
 export default function PricingPage() {
@@ -25,6 +26,7 @@ export default function PricingPage() {
         </Link>
         <div className="hidden md:flex gap-6 font-mono text-[10px]">
           <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
+          <Link href="/services" className="text-white/35 hover:text-electricCyan uppercase">Services</Link>
           <Link href="/about" className="text-white/35 hover:text-electricCyan uppercase">About</Link>
           <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/35 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
           <span className="text-electricCyan uppercase">Pricing</span>
@@ -44,8 +46,13 @@ export default function PricingPage() {
             {interval==='year'&&<motion.span initial={{opacity:0,x:-8}} animate={{opacity:1,x:0}} className="font-mono text-[9px] px-2 py-0.5 rounded-sm bg-emeraldPulse/15 border border-emeraldPulse/30 text-emeraldPulse">SAVE 10%</motion.span>}
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 max-w-[1400px] mx-auto">
-          {PLANS.map(plan=>{
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {[
+            PLANS.find(p => p.id === 'free')!,
+            PLANS.find(p => p.id === 'pro')!,
+            PLANS.find(p => p.id === 'enterprise')!,
+            PLANS.find(p => p.id === 'family')!,
+          ].filter(Boolean).map(plan=>{
             const price=interval==='month'?plan.monthlyPrice:plan.yearlyPrice;const isCurrent=subscription?.planId===plan.id;const isLoading=loading===plan.id;const saving=yearlySaving(plan);
             return(
               <div key={plan.id} className={`relative flex flex-col rounded-sm border overflow-hidden ${plan.popular?'scale-[1.02]':''}`} style={{borderColor:`${plan.color}35`,background:'rgba(10,8,14,0.95)'}}>
@@ -88,6 +95,23 @@ export default function PricingPage() {
             </div>
             <div className="relative z-10 px-5 pb-5 pt-3">
               <Link href="/pricing/groq-agent" className="relative w-full flex items-center justify-center gap-2 py-3 rounded-sm border overflow-hidden transition-all hover:bg-white/5" style={{borderColor:`${GROQ_AGENT_PLAN.color}50`,background:`${GROQ_AGENT_PLAN.color}12`,color:GROQ_AGENT_PLAN.color}}>
+                <span className="font-mono text-[10px] tracking-[1.5px] uppercase">View Details</span>
+              </Link>
+            </div>
+          </div>
+          <div className={`relative flex flex-col rounded-sm border overflow-hidden hover:scale-[1.02] transition-transform`} style={{borderColor:`${PROTOCOL_WATCH_PLAN.color}35`,background:'rgba(10,8,14,0.95)'}}>
+            <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2" style={{borderColor:PROTOCOL_WATCH_PLAN.color}}/><span className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2" style={{borderColor:PROTOCOL_WATCH_PLAN.color}}/>
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{backgroundImage:'linear-gradient(rgba(0,230,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,255,1) 1px,transparent 1px)',backgroundSize:'24px 24px'}}/>
+            <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none" style={{background:`radial-gradient(ellipse 80% 100% at 50% 0%,${PROTOCOL_WATCH_PLAN.color}12,transparent 70%)`}}/>
+            <div className="relative z-10 px-5 pt-4 pb-4 border-b" style={{borderColor:`${PROTOCOL_WATCH_PLAN.color}20`}}>
+              <h2 className="font-rajdhani font-bold text-xl text-white">{PROTOCOL_WATCH_PLAN.name}</h2>
+              <div className="font-rajdhani font-bold text-4xl mt-1" style={{color:PROTOCOL_WATCH_PLAN.color}}>${(PROTOCOL_WATCH_PLAN.monthlyPrice/100).toFixed(0)}<span className="text-base">/mo</span></div>
+            </div>
+            <div className="relative z-10 px-5 py-4 flex flex-col gap-2.5 flex-1">
+              {['Up to 3 AI bots', 'PASS / FAIL per step', 'Custom forbidden rules', 'Live alert on violation', '7-day free trial'].map(f=><div key={f} className="flex items-center gap-2.5"><span className="font-mono text-[10px] flex-shrink-0" style={{color:PROTOCOL_WATCH_PLAN.color}}>✓</span><span className={`font-mono text-[10px] text-white/70`}>{f}</span></div>)}
+            </div>
+            <div className="relative z-10 px-5 pb-5 pt-3">
+              <Link href="/pricing/protocol-watch" className="relative w-full flex items-center justify-center gap-2 py-3 rounded-sm border overflow-hidden transition-all hover:bg-white/5" style={{borderColor:`${PROTOCOL_WATCH_PLAN.color}50`,background:`${PROTOCOL_WATCH_PLAN.color}12`,color:PROTOCOL_WATCH_PLAN.color}}>
                 <span className="font-mono text-[10px] tracking-[1.5px] uppercase">View Details</span>
               </Link>
             </div>
