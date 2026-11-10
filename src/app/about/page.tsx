@@ -21,6 +21,7 @@ export default function AboutPage(){
           <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
           <Link href="/services" className="text-white/35 hover:text-electricCyan uppercase">Services</Link>
           <span className="text-electricCyan uppercase">About</span>
+          <a href="https://network.4sightai.net" target="_blank" rel="noopener noreferrer" className="text-electricCyan hover:underline uppercase font-semibold">Network</a>
           <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/35 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
           <Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link>
           <button onClick={() => setIsContactOpen(true)} className="text-white/35 hover:text-electricCyan uppercase focus:outline-none">Contact</button>

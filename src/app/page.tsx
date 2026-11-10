@@ -25,6 +25,7 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
         <a href="#features" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Features</a>
         <a href="#pricing" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">Pricing</a>
         <Link href="/about" className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px]">About</Link>
+        <a href="https://network.4sightai.net" target="_blank" rel="noopener noreferrer" className="text-electricCyan hover:underline transition-colors uppercase tracking-[1px] font-semibold">Network</a>
         <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/45 hover:text-electricCyan transition-colors uppercase tracking-[1px]">INFO@4SIGHTGUARDIANAI.NET</a>
         <button onClick={onContactClick} className="text-white/70 hover:text-electricCyan transition-colors uppercase tracking-[1px] focus:outline-none">Contact</button>
       </div>
@@ -41,6 +42,7 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
           <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">Features</a>
           <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">Pricing</a>
           <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-white/70 hover:text-electricCyan uppercase">About</Link>
+          <a href="https://network.4sightai.net" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)} className="text-electricCyan font-semibold uppercase">Network</a>
           <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/50 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
           <button onClick={() => { setMobileMenuOpen(false); onContactClick(); }} className="text-left text-white/70 hover:text-electricCyan uppercase">Contact</button>
         </div>

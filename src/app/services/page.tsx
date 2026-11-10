@@ -90,6 +90,7 @@ export default function ServicesPage() {
         <div className="hidden md:flex gap-6 font-mono text-[10px]">
           <Link href="/" className="text-white/35 hover:text-electricCyan uppercase">Home</Link>
           <span className="text-electricCyan uppercase">Services</span>
+          <a href="https://network.4sightai.net" target="_blank" rel="noopener noreferrer" className="text-electricCyan hover:underline uppercase font-semibold">Network</a>
           <Link href="/about" className="text-white/35 hover:text-electricCyan uppercase">About</Link>
           <a href="mailto:INFO@4SIGHTGUARDIANAI.NET" className="text-white/35 hover:text-electricCyan uppercase">INFO@4SIGHTGUARDIANAI.NET</a>
           <Link href="/pricing" className="text-white/35 hover:text-electricCyan uppercase">Pricing</Link>
